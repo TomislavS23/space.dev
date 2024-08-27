@@ -11,15 +11,15 @@ public final class UserDTO {
     public Integer idUser;
     public String username;
     public String password;
-    public RoleDTO role;
+    public RoleDTO idRole;
 
     public UserDTO() {
     }
 
-    public UserDTO(String username, String password, RoleDTO role) {
+    public UserDTO(String username, String password, RoleDTO idRole) {
         this.username = username;
         this.password = password;
-        this.role = role;
+        this.idRole = idRole;
     }
 
     public Integer getIdUser() {
@@ -47,11 +47,11 @@ public final class UserDTO {
     }
 
     public RoleDTO getRole() {
-        return role;
+        return idRole;
     }
 
-    public void setRole(RoleDTO role) {
-        this.role = role;
+    public void setRole(RoleDTO idRole) {
+        this.idRole = idRole;
     }
 
     @Override

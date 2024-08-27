@@ -18,6 +18,15 @@ public class RoleDTO {
         this.roleType = roleType;
     }
 
+    public RoleDTO(Integer idRole, String roleType) {
+        this.idRole = idRole;
+        this.roleType = roleType;
+    }
+
+    public RoleDTO(Integer idRole) {
+        this.idRole = idRole;
+    }
+
     public Integer getIdRole() {
         return idRole;
     }
