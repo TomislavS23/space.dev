@@ -1,4 +1,4 @@
-package dev.space.dao;
+package dev.space.dto;
 
 import java.util.Objects;
 
@@ -6,20 +6,28 @@ import java.util.Objects;
  *
  * @author tomislav
  */
-public final class UserDAO{
-    public Integer IdUser;
+public final class UserDTO {
+
+    public Integer idUser;
     public String username;
     public String password;
+    public RoleDTO role;
 
-    public UserDAO() {
+    public UserDTO() {
+    }
+
+    public UserDTO(String username, String password, RoleDTO role) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
     }
 
     public Integer getIdUser() {
-        return IdUser;
+        return idUser;
     }
 
-    public void setIdUser(Integer IdUser) {
-        this.IdUser = IdUser;
+    public void setIdUser(Integer idUser) {
+        this.idUser = idUser;
     }
 
     public String getUsername() {
@@ -36,6 +44,14 @@ public final class UserDAO{
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public RoleDTO getRole() {
+        return role;
+    }
+
+    public void setRole(RoleDTO role) {
+        this.role = role;
     }
 
     @Override
@@ -56,7 +72,7 @@ public final class UserDAO{
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final UserDAO other = (UserDAO) obj;
+        final UserDTO other = (UserDTO) obj;
         return Objects.equals(this.username, other.username);
     }
 }

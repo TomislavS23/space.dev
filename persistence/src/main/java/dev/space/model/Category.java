@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package dev.space.model;
 
 import jakarta.persistence.Basic;
@@ -7,6 +11,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.util.Collection;
@@ -17,6 +23,8 @@ import java.util.Collection;
  */
 @Entity
 @Table(name = "category")
+@NamedQueries({
+    @NamedQuery(name = "Category.findAll", query = "SELECT c FROM Category c")})
 public class Category implements Serializable {
 
     private static final long serialVersionUID = 1L;

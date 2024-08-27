@@ -12,6 +12,7 @@
     <class>dev.space.Category</class>
     <class>dev.space.User</class>
     <class>dev.space.Article</class>
+    <class>dev.space.model.Users</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/spacedev"/>
       <property name="javax.persistence.jdbc.user" value="postgres"/>

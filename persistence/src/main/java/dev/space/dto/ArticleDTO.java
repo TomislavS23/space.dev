@@ -1,4 +1,4 @@
-package dev.space.dao;
+package dev.space.dto;
 
 import java.util.Collection;
 import java.util.Date;
@@ -8,7 +8,7 @@ import java.util.Objects;
  *
  * @author tomislav
  */
-public class ArticleDAO {
+public class ArticleDTO {
 
     private Integer idArticle;
     private String title;
@@ -16,10 +16,10 @@ public class ArticleDAO {
     private String description;
     private String content;
     private Date datePublished;
-    private Collection<CategoryDAO> categoryCollection;
-    private JournalistDAO idJournalist;
+    private Collection<CategoryDTO> categoryCollection;
+    private JournalistDTO idJournalist;
 
-    public ArticleDAO() {
+    public ArticleDTO() {
     }
 
     public Integer getIdArticle() {
@@ -70,19 +70,19 @@ public class ArticleDAO {
         this.datePublished = datePublished;
     }
 
-    public Collection<CategoryDAO> getCategoryCollection() {
+    public Collection<CategoryDTO> getCategoryCollection() {
         return categoryCollection;
     }
 
-    public void setCategoryCollection(Collection<CategoryDAO> categoryCollection) {
+    public void setCategoryCollection(Collection<CategoryDTO> categoryCollection) {
         this.categoryCollection = categoryCollection;
     }
 
-    public JournalistDAO getIdJournalist() {
+    public JournalistDTO getIdJournalist() {
         return idJournalist;
     }
 
-    public void setIdJournalist(JournalistDAO idJournalist) {
+    public void setIdJournalist(JournalistDTO idJournalist) {
         this.idJournalist = idJournalist;
     }
 
@@ -105,7 +105,7 @@ public class ArticleDAO {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final ArticleDAO other = (ArticleDAO) obj;
+        final ArticleDTO other = (ArticleDTO) obj;
         if (!Objects.equals(this.title, other.title)) {
             return false;
         }

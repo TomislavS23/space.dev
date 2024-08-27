@@ -1,4 +1,4 @@
-package dev.space.dao;
+package dev.space.dto;
 
 import java.util.Objects;
 
@@ -6,12 +6,12 @@ import java.util.Objects;
  *
  * @author tomislav
  */
-public class CategoryDAO {
+public class CategoryDTO {
 
     private Integer idCategory;
     private String categoryType;
 
-    public CategoryDAO() {
+    public CategoryDTO() {
     }
 
     public Integer getIdCategory() {
@@ -48,7 +48,7 @@ public class CategoryDAO {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final CategoryDAO other = (CategoryDAO) obj;
+        final CategoryDTO other = (CategoryDTO) obj;
         return Objects.equals(this.categoryType, other.categoryType);
     }
 

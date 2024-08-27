@@ -1,4 +1,4 @@
-package dev.space.dao;
+package dev.space.dto;
 
 import java.util.Collection;
 
@@ -6,13 +6,13 @@ import java.util.Collection;
  *
  * @author tomislav
  */
-public class JournalistDAO {
+public class JournalistDTO {
 
     private Integer idJournalist;
     private String firstName;
     private String lastName;
 
-    public JournalistDAO() {
+    public JournalistDTO() {
     }
 
     public Integer getIdJournalist() {

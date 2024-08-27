@@ -1,4 +1,4 @@
-package dev.space.dao;
+package dev.space.dto;
 
 import java.util.Objects;
 
@@ -6,11 +6,16 @@ import java.util.Objects;
  *
  * @author tomislav
  */
-public class RoleDAO {
+public class RoleDTO {
+
     private Integer idRole;
     private String roleType;
 
-    public RoleDAO() {
+    public RoleDTO() {
+    }
+
+    public RoleDTO(String roleType) {
+        this.roleType = roleType;
     }
 
     public Integer getIdRole() {
@@ -47,11 +52,9 @@ public class RoleDAO {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final RoleDAO other = (RoleDAO) obj;
+        final RoleDTO other = (RoleDTO) obj;
         return Objects.equals(this.roleType, other.roleType);
     }
-    
-    
 
     @Override
     public String toString() {

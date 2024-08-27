@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package dev.space.model;
 
 import jakarta.persistence.Basic;
@@ -6,8 +10,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.io.Serializable;
+import java.util.Collection;
 
 /**
  *
@@ -15,6 +23,8 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "role")
+@NamedQueries({
+    @NamedQuery(name = "Role.findAll", query = "SELECT r FROM Role r")})
 public class Role implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -25,6 +35,8 @@ public class Role implements Serializable {
     private Integer idRole;
     @Column(name = "role_type")
     private String roleType;
+    @OneToMany(mappedBy = "idRole")
+    private Collection<Users> usersCollection;
 
     public Role() {
     }
@@ -47,6 +59,14 @@ public class Role implements Serializable {
 
     public void setRoleType(String roleType) {
         this.roleType = roleType;
+    }
+
+    public Collection<Users> getUsersCollection() {
+        return usersCollection;
+    }
+
+    public void setUsersCollection(Collection<Users> usersCollection) {
+        this.usersCollection = usersCollection;
     }
 
     @Override

@@ -6,11 +6,12 @@ CREATE TABLE role
     role_type VARCHAR(50)
 );
 
-CREATE TABLE "user"
+CREATE TABLE users
 (
     id_user SERIAL PRIMARY KEY,
     username VARCHAR(50),
-    password VARCHAR(50)
+    password VARCHAR(50),
+    id_role INT REFERENCES role(id_role)
 );
 
 CREATE TABLE category
@@ -50,8 +51,8 @@ INSERT INTO role(role_type) VALUES
 ('user'),
 ('admin');
 
-INSERT INTO "user"(username, password) VALUES
-('user', 'user'),
-('admin', 'admin')
+INSERT INTO users(username, password, id_role)VALUES
+('user', 'user', 1),
+('admin', 'admin', 2)
 
 -- Journalists, articles and categories are added through admin panel in the app

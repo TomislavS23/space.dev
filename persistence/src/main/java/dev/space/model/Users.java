@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package dev.space.model;
 
 import jakarta.persistence.Basic;
@@ -6,6 +10,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import java.io.Serializable;
 
@@ -14,8 +22,10 @@ import java.io.Serializable;
  * @author tomislav
  */
 @Entity
-@Table(name = "user")
-public class User implements Serializable {
+@Table(name = "users")
+@NamedQueries({
+    @NamedQuery(name = "Users.findAll", query = "SELECT u FROM Users u")})
+public class Users implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -27,11 +37,14 @@ public class User implements Serializable {
     private String username;
     @Column(name = "password")
     private String password;
+    @JoinColumn(name = "id_role", referencedColumnName = "id_role")
+    @ManyToOne
+    private Role idRole;
 
-    public User() {
+    public Users() {
     }
 
-    public User(Integer idUser) {
+    public Users(Integer idUser) {
         this.idUser = idUser;
     }
 
@@ -59,6 +72,14 @@ public class User implements Serializable {
         this.password = password;
     }
 
+    public Role getIdRole() {
+        return idRole;
+    }
+
+    public void setIdRole(Role idRole) {
+        this.idRole = idRole;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -69,10 +90,10 @@ public class User implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof User)) {
+        if (!(object instanceof Users)) {
             return false;
         }
-        User other = (User) object;
+        Users other = (Users) object;
         if ((this.idUser == null && other.idUser != null) || (this.idUser != null && !this.idUser.equals(other.idUser))) {
             return false;
         }
@@ -81,7 +102,7 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "dev.space.model.User[ idUser=" + idUser + " ]";
+        return "dev.space.model.Users[ idUser=" + idUser + " ]";
     }
     
 }

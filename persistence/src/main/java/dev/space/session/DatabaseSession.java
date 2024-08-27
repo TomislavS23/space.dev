@@ -4,7 +4,7 @@ import dev.space.model.Article;
 import dev.space.model.Category;
 import dev.space.model.Journalist;
 import dev.space.model.Role;
-import dev.space.model.User;
+import dev.space.model.Users;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Configuration;
@@ -23,14 +23,14 @@ public final class DatabaseSession {
     }
 
     public static SessionFactory InitializeSession() {
-
+        
         SessionFactory session
                 = new Configuration()
                         .addAnnotatedClass(Article.class)
                         .addAnnotatedClass(Category.class)
                         .addAnnotatedClass(Journalist.class)
                         .addAnnotatedClass(Role.class)
-                        .addAnnotatedClass(User.class)
+                        .addAnnotatedClass(Users.class)
                         // PostgreSQL
                         .setProperty(AvailableSettings.JAKARTA_JDBC_URL, URL)
                         // Credentials

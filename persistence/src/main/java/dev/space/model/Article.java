@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package dev.space.model;
 
 import jakarta.persistence.Basic;
@@ -10,6 +14,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -23,6 +29,8 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "article")
+@NamedQueries({
+    @NamedQuery(name = "Article.findAll", query = "SELECT a FROM Article a")})
 public class Article implements Serializable {
 
     private static final long serialVersionUID = 1L;
