@@ -22,6 +22,11 @@ public final class UserDTO {
         this.idRole = idRole;
     }
 
+    public UserDTO(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
     public Integer getIdUser() {
         return idUser;
     }

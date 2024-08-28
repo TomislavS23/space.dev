@@ -76,8 +76,8 @@ public class AuthFrame extends javax.swing.JFrame {
     }
 
     private void configurePanels() {
-        tpContent.add("Login", new LoginFormPanel());
-        tpContent.add("Register", new RegisterFormPanel());
+        tpContent.add("Login", new LoginFormPanel(this));
+        tpContent.add("Register", new RegisterFormPanel(this));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -1,11 +1,22 @@
 package dev.space.view;
 
+import dev.space.dto.UserDTO;
+import dev.space.factory.MapperFactory;
+import dev.space.frame.AdminFrame;
+import dev.space.frame.UserFrame;
+import dev.space.model.Users;
+import dev.space.query.operation.UserOperations;
+import dev.space.session.HibernateSessionFactory;
+import dev.space.session.Operations;
+import dev.space.utilities.MessageUtils;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Optional;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.text.JTextComponent;
+import javax.swing.JTextField;
+import org.modelmapper.ModelMapper;
 
 /**
  *
@@ -13,12 +24,17 @@ import javax.swing.text.JTextComponent;
  */
 public class LoginFormPanel extends javax.swing.JPanel {
 
+    private final JFrame parent;
+
     /**
      * Creates new form LoginForm
+     * @param parent
      */
-    public LoginFormPanel() {
+    public LoginFormPanel(JFrame parent) {
         initComponents();
         initialize();
+
+        this.parent = parent;
     }
 
     /**
@@ -102,7 +118,32 @@ public class LoginFormPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
-        // TODO add your handling code here:
+        if (!formValid()) {
+            fields.forEach((x, y) -> y.setVisible(true));
+        }
+
+        UserDTO entity = new UserDTO(
+                tfUsername.getText().trim(),
+                new String(pfPassword.getPassword()));
+
+        try {
+            Optional<List<Users>> result = session.ReadEntity(mapper.map(entity, Users.class));
+
+            if (!result.get().isEmpty()) {
+                Users user = result.get().get(0);
+
+                if (user.getIdRole().getIdRole() == 1) {
+                    new UserFrame().setVisible(true);
+                    parent.dispose();
+                } else {
+                    new AdminFrame().setVisible(true);
+                    parent.dispose();
+                }
+            }
+            fields.forEach((x, y) -> y.setVisible(true));
+        } catch (Exception ex) {
+            MessageUtils.showErrorMessage("Error", ex.getMessage());
+        }
     }//GEN-LAST:event_btnSubmitActionPerformed
 
 
@@ -117,14 +158,17 @@ public class LoginFormPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     // Global variables
-    
-    private Map<JTextComponent, JLabel> fields = new HashMap<>();
-    
+    private UserOperations session;
+    private ModelMapper mapper;
+    private Map<JTextField, JLabel> fields = new HashMap<>();
+
     private void initialize() {
         initValidation();
         hideErrors();
+        initSession();
+        initMapper();
     }
-    
+
     private void initValidation() {
         fields.put(tfUsername, lbAuthError);
         fields.put(pfPassword, lbAuthError);
@@ -134,7 +178,22 @@ public class LoginFormPanel extends javax.swing.JPanel {
         fields.forEach((x, y) -> y.setVisible(false));
     }
 
-    private void clearForm() {
-        fields.forEach((x, y) -> x.setText(""));
+    private void initSession() {
+        session = HibernateSessionFactory.InitializeSession(Operations.USER);
+    }
+
+    private boolean formValid() {
+        boolean ok = true;
+
+        for (Map.Entry<JTextField, JLabel> entry : fields.entrySet()) {
+            ok &= !entry.getKey().getText().trim().isEmpty();
+            entry.getValue().setVisible(entry.getKey().getText().trim().isEmpty());
+        }
+
+        return ok;
+    }
+
+    private void initMapper() {
+        mapper = MapperFactory.InitializeMapper();
     }
 }

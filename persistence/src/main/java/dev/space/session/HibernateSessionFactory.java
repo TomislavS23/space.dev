@@ -24,7 +24,7 @@ public final class HibernateSessionFactory {
     private static final String USERNAME = "postgres";
     private static final String PASSWORD = "postgres";
 
-    private static SessionFactory sessionFactory;
+    private static final SessionFactory sessionFactory;
 
     private HibernateSessionFactory() {
     }
