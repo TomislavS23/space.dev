@@ -15,6 +15,10 @@ public class JournalistDTO {
     public JournalistDTO() {
     }
 
+    public JournalistDTO(Integer idJournalist) {
+        this.idJournalist = idJournalist;
+    }
+
     public Integer getIdJournalist() {
         return idJournalist;
     }

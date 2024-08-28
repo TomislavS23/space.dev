@@ -1,12 +1,13 @@
 package dev.space.query.operation;
 
-import dev.space.dto.JournalistDTO;
+import dev.space.model.Journalist;
 import java.util.List;
+import org.hibernate.HibernateException;
 
 /**
  *
  * @author tomislav
  */
-public interface JournalistOperations extends BaseOperations<JournalistDTO> {
-    List<JournalistDTO> ReadAllEntities();
+public interface JournalistOperations extends BaseOperations<Journalist> {
+    List<Journalist> ReadAllEntities() throws Exception, HibernateException;
 }

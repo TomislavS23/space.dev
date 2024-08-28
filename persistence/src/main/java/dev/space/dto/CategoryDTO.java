@@ -14,6 +14,10 @@ public class CategoryDTO {
     public CategoryDTO() {
     }
 
+    public CategoryDTO(Integer idCategory) {
+        this.idCategory = idCategory;
+    }
+
     public Integer getIdCategory() {
         return idCategory;
     }

@@ -5,6 +5,9 @@ import dev.space.model.Category;
 import dev.space.model.Journalist;
 import dev.space.model.Role;
 import dev.space.model.Users;
+import dev.space.query.implementation.ArticleOperationsImpl;
+import dev.space.query.implementation.CategoryOperationsImpl;
+import dev.space.query.implementation.JournalistOperationsImpl;
 import dev.space.query.implementation.RoleOperationsImpl;
 import dev.space.query.implementation.UserOperationsImpl;
 import org.hibernate.SessionFactory;
@@ -22,6 +25,9 @@ public final class HibernateSessionFactory {
     private static final String PASSWORD = "postgres";
 
     private static SessionFactory sessionFactory;
+
+    private HibernateSessionFactory() {
+    }
 
     static {
         sessionFactory
@@ -52,11 +58,11 @@ public final class HibernateSessionFactory {
             case ROLE:
                 return (T) new RoleOperationsImpl(sessionFactory);
             case JOURNALIST:
-                //return (T) new JournalistOperationsImpl(sessionFactory);
+                return (T) new JournalistOperationsImpl(sessionFactory);
             case CATEGORY:
-                //return (T) new CategoryOperationsImpl(sessionFactory);
+                return (T) new CategoryOperationsImpl(sessionFactory);
             case ARTICLE:
-                //return (T) new ArticleOperationsImpl(sessionFactory);
+                return (T) new ArticleOperationsImpl(sessionFactory);
             default:
                 throw new IllegalArgumentException();
         }

@@ -34,7 +34,7 @@ CREATE TABLE article
     link VARCHAR(2048),
     description VARCHAR(255),
     content VARCHAR,
-    date_published TIMESTAMP,
+    date_published DATE,
     id_journalist INT REFERENCES journalist(id_journalist)
 );
 

@@ -1,13 +1,16 @@
 package dev.space.query.operation;
 
-import dev.space.dto.ArticleDTO;
+import dev.space.model.Article;
+import dev.space.model.Category;
 import java.util.List;
+import org.hibernate.HibernateException;
 
 /**
  *
  * @author tomislav
  */
-public interface ArticleOperations extends BaseOperations<ArticleDTO> {
+public interface ArticleOperations extends BaseOperations<Article> {
 
-    List<ArticleDTO> ReadAllEntities();
+    List<Article> ReadAllEntities() throws Exception, HibernateException;
+    void AssignCategories(List<Category> entities, Integer id) throws Exception, HibernateException;
 }

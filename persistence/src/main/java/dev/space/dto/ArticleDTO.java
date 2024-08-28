@@ -22,6 +22,23 @@ public class ArticleDTO {
     public ArticleDTO() {
     }
 
+    public ArticleDTO(String title, String link, String description, String content, Date datePublished, JournalistDTO idJournalist) {
+        this.title = title;
+        this.link = link;
+        this.description = description;
+        this.content = content;
+        this.datePublished = datePublished;
+        this.idJournalist = idJournalist;
+    }
+
+    public Collection<CategoryDTO> getCategoryCollection() {
+        return categoryCollection;
+    }
+
+    public void setCategoryCollection(Collection<CategoryDTO> categoryCollection) {
+        this.categoryCollection = categoryCollection;
+    }
+
     public Integer getIdArticle() {
         return idArticle;
     }
@@ -68,14 +85,6 @@ public class ArticleDTO {
 
     public void setDatePublished(Date datePublished) {
         this.datePublished = datePublished;
-    }
-
-    public Collection<CategoryDTO> getCategoryCollection() {
-        return categoryCollection;
-    }
-
-    public void setCategoryCollection(Collection<CategoryDTO> categoryCollection) {
-        this.categoryCollection = categoryCollection;
     }
 
     public JournalistDTO getIdJournalist() {

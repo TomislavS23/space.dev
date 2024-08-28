@@ -48,7 +48,7 @@ public class Article implements Serializable {
     @Column(name = "content")
     private String content;
     @Column(name = "date_published")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date datePublished;
     @JoinTable(name = "article_category", joinColumns = {
         @JoinColumn(name = "id_article", referencedColumnName = "id_article")}, inverseJoinColumns = {
