@@ -26,7 +26,7 @@ import java.util.Objects;
 @Table(name = "category")
 @NamedQueries({
     @NamedQuery(name = "Category.findAll", query = "SELECT c FROM Category c")})
-public class Category implements Serializable {
+public class Category implements Serializable, Comparable<Category>{
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -95,6 +95,11 @@ public class Category implements Serializable {
     @Override
     public String toString() {
         return categoryType;
+    }
+
+    @Override
+    public int compareTo(Category o) {
+        return categoryType.compareTo(o.categoryType);
     }
 
 }

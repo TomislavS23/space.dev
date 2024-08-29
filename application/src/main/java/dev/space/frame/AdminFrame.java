@@ -17,14 +17,15 @@ import dev.space.query.operation.RoleOperations;
 import dev.space.rss.RSSReader;
 import dev.space.session.HibernateSessionFactory;
 import dev.space.session.Operations;
+import dev.space.utilities.DateParser;
 import dev.space.utilities.MessageUtils;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.awt.EventQueue;
+import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.TimeZone;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
@@ -199,32 +200,35 @@ public class AdminFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void miInitializeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miInitializeActionPerformed
-        try {
-            Optional<List<Item>> source = RSSReader.ReadFromSource();
-            List<Item> items = source.get();
+        new Thread(
+                () -> {
+                    try {
+                        Optional<List<Item>> source = RSSReader.ReadFromSource();
+                        List<Item> items = source.get();
 
-            for (Item item : items) {
-                createCategories(item);
-                createJournalist(item);
-                createArticle(item);
-            }
+                        for (Item item : items) {
+                            createCategories(item);
+                            createJournalist(item);
+                            createArticle(item);
+                        }
 
-            loadModels();
-            initTable(); // THIS SHOULD NOT BE HERE !!!!!!!!!!!!!!!!!!! TEMPORARY ONLY!!!!!!!!!!!!!!
-        } catch (IOException ex) {
-            MessageUtils.showErrorMessage("Error", ex.getMessage());
-        } catch (Exception ex) {
-            Logger.getLogger(AdminFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
+                        EventQueue.invokeLater(() -> refreshModels());
+                    } catch (Exception ex) {
+                        MessageUtils.showErrorMessage("Error", ex.getMessage());
+                    }
+                }
+        ).start();
+
+        refreshModels();
     }//GEN-LAST:event_miInitializeActionPerformed
 
     private void miDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miDeleteActionPerformed
         try {
             if (MessageUtils.showConfirmDialog("Critical Operation!", "This operation is irreversible and cannot be undone! Are you sure?")) {
-                session.DeleteAllEntities();
+                articleSession.DeleteAllEntities();
                 journalistSession.DeleteAllEntities();
                 categorySession.DeleteAllEntities();
-                articlesTableModel.setArticles(session.ReadAllEntities());
+                articlesTableModel.setArticles(articleSession.ReadAllEntities());
             }
 
             loadModels();
@@ -263,7 +267,7 @@ public class AdminFrame extends javax.swing.JFrame {
 
     // Global variables
     private BasicArticleTableModel articlesTableModel;
-    private ArticleOperations session;
+    private ArticleOperations articleSession;
     private RoleOperations roleSession;
     private JournalistOperations journalistSession;
     private CategoryOperations categorySession;
@@ -288,7 +292,7 @@ public class AdminFrame extends javax.swing.JFrame {
     }
 
     private void initSession() {
-        session = HibernateSessionFactory.InitializeSession(Operations.ARTICLE);
+        articleSession = HibernateSessionFactory.InitializeSession(Operations.ARTICLE);
         roleSession = HibernateSessionFactory.InitializeSession(Operations.ROLE);
         journalistSession = HibernateSessionFactory.InitializeSession(Operations.JOURNALIST);
         categorySession = HibernateSessionFactory.InitializeSession(Operations.CATEGORY);
@@ -298,7 +302,12 @@ public class AdminFrame extends javax.swing.JFrame {
         tbArticles.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tbArticles.setAutoCreateRowSorter(true);
         tbArticles.setRowHeight(25);
-        articlesTableModel = new BasicArticleTableModel(session.ReadAllEntities());
+        articlesTableModel = new BasicArticleTableModel(articleSession.ReadAllEntities());
+        tbArticles.setModel(articlesTableModel);
+    }
+
+    private void refreshTable() throws Exception {
+        articlesTableModel = new BasicArticleTableModel(articleSession.ReadAllEntities());
         tbArticles.setModel(articlesTableModel);
     }
 
@@ -310,21 +319,19 @@ public class AdminFrame extends javax.swing.JFrame {
 
     // TODO: works, but needs fixing...
     private void loadModels() {
-        List<Role> roles = null;
-        List<Journalist> journalists = null;
-        List<Category> categories = null;
+        Set<Role> roles = new TreeSet<>();
+        Set<Journalist> journalists = new TreeSet<>();
+        Set<Category> categories = new TreeSet<>();
 
         try {
-            roles = roleSession.ReadAllEntities();
-            journalists = journalistSession.ReadAllEntities().get();
-            categories = categorySession.ReadAllEntities().get();
+            roleSession.ReadAllEntities().forEach(e -> roles.add(e));
+            journalistSession.ReadAllEntities().get().forEach(e -> journalists.add(e));
+            categorySession.ReadAllEntities().get().forEach(e -> categories.add(e));
         } catch (Exception ex) {
             MessageUtils.showErrorMessage("Error", ex.getMessage());
         }
 
-        roleModel.clear();
-        journalistModel.clear();
-        categoryModel.clear();
+        clearModels();
 
         roles.forEach(roleModel::addElement);
         journalists.forEach(journalistModel::addElement);
@@ -356,9 +363,13 @@ public class AdminFrame extends javax.swing.JFrame {
     }
 
     private void createJournalist(Item item) {
-        String[] author = item.getAuthor().get().split(" ");
+        if (item.getAuthor().isEmpty()) {
+            return;
+        }
 
+        String[] author = item.getAuthor().get().split(" ");
         JournalistDTO journalist = new JournalistDTO(author[0], author[1]);
+
         try {
             List<Journalist> entities = journalistSession.ReadAllEntities().get();
 
@@ -376,45 +387,16 @@ public class AdminFrame extends javax.swing.JFrame {
     private void createArticle(Item item) {
 
         try {
-            // Journalist for that article
-            String[] author = item.getAuthor().get().split(" ");
-            JournalistDTO journalistDto = new JournalistDTO(author[0], author[1]);
-            Optional<List<Journalist>> journalist = journalistSession
-                    .ReadEntity(mapper.map(journalistDto, Journalist.class));
-            JournalistDTO journalistEntity = mapper.map(journalist.get().get(0), JournalistDTO.class);
+            // Journalist for that article if exists
+            JournalistDTO journalist = createJournalistEntity(item);
 
             // Categories for that article (or rather IDs)
-            List<String> strings = item.getCategories();
-            List<CategoryDTO> categories = new ArrayList<>();
+            List<CategoryDTO> categories = createCategoriesEntities(item);
 
-            for (String string : strings) {
-                CategoryDTO category = new CategoryDTO(string);
-
-                Optional<List<Category>> categoryEntity = categorySession
-                        .ReadEntity(mapper.map(category, Category.class));
-
-                if (!categoryEntity.isEmpty()) {
-                    categories.add(mapper.map(categoryEntity.get().get(0), CategoryDTO.class));
-                }
-            }
-
-            /*
-            String dateString = item.getPubDate().get();
-            SimpleDateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
-            Date date = formatter.parse(dateString);
-             */
-            
             // Prepare ArticleDTO and add to database
-            ArticleDTO article = new ArticleDTO(
-                    item.getTitle().get(),
-                    item.getLink().get(),
-                    item.getDescription().get(),
-                    item.getDescription().get(),
-                    categories,
-                    journalistEntity
-            );
+            ArticleDTO article = createArticleEntity(item, journalist, categories);
 
-            session.InsertEntity(mapper.map(article, Article.class));
+            articleSession.InsertEntity(mapper.map(article, Article.class));
 
         } catch (Exception e) {
             MessageUtils.showErrorMessage("Error", e.getMessage());
@@ -424,6 +406,77 @@ public class AdminFrame extends javax.swing.JFrame {
 
     private void initMapper() {
         mapper = MapperFactory.InitializeMapper();
+    }
+
+    // this could be Optional later in development
+    private JournalistDTO createJournalistEntity(Item item) throws Exception {
+
+        if (item.getAuthor().isEmpty()) {
+            return null;
+        }
+
+        String[] author = item.getAuthor().get().split(" ");
+        JournalistDTO journalistDto = new JournalistDTO(author[0], author[1]);
+        Optional<List<Journalist>> journalist = journalistSession
+                .ReadEntity(mapper.map(journalistDto, Journalist.class));
+
+        return mapper.map(journalist.get().get(0), JournalistDTO.class);
+    }
+
+    // this could be Optional later in development
+    private List<CategoryDTO> createCategoriesEntities(Item item) throws Exception {
+        List<String> strings = item.getCategories();
+        List<CategoryDTO> categories = new ArrayList<>();
+
+        for (String string : strings) {
+            CategoryDTO category = new CategoryDTO(string);
+
+            Optional<List<Category>> categoryEntity = categorySession
+                    .ReadEntity(mapper.map(category, Category.class));
+
+            if (!categoryEntity.isEmpty()) {
+                categories.add(mapper.map(categoryEntity.get().get(0), CategoryDTO.class));
+            }
+        }
+
+        return categories;
+    }
+
+    // this could be Optional later in development
+    private ArticleDTO createArticleEntity(Item item, JournalistDTO journalist, List<CategoryDTO> categories) throws ParseException {
+        if (journalist != null) {
+            return new ArticleDTO(
+                    item.getTitle().get(),
+                    item.getLink().get(),
+                    item.getDescription().get(),
+                    item.getDescription().get(),
+                    DateParser.FormatDate(item.getPubDate().get()),
+                    categories,
+                    journalist
+            );
+        }
+        return new ArticleDTO(
+                item.getTitle().get(),
+                item.getLink().get(),
+                item.getDescription().get(),
+                item.getDescription().get(),
+                DateParser.FormatDate(item.getPubDate().get()),
+                categories);
+    }
+
+    private void refreshModels() {
+        try {
+            refreshTable();
+            loadModels();
+        } catch (Exception ex) {
+            MessageUtils.showErrorMessage("Error", ex.getMessage());
+        }
+    }
+
+    private void clearModels() {
+        roleModel.clear();
+        journalistModel.clear();
+        categoryModel.clear();
     }
 
 }

@@ -25,7 +25,7 @@ import java.util.Collection;
 @Table(name = "role")
 @NamedQueries({
     @NamedQuery(name = "Role.findAll", query = "SELECT r FROM Role r")})
-public class Role implements Serializable {
+public class Role implements Serializable, Comparable<Role>{
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -92,6 +92,11 @@ public class Role implements Serializable {
     @Override
     public String toString() {
         return roleType;
+    }
+
+    @Override
+    public int compareTo(Role o) {
+        return roleType.compareTo(o.roleType);
     }
     
 }

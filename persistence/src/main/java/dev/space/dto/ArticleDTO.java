@@ -32,13 +32,13 @@ public class ArticleDTO {
         this.idJournalist = idJournalist;
     }
 
-    public ArticleDTO(String title, String link, String description, String content, Collection<CategoryDTO> categoryCollection, JournalistDTO idJournalist) {
+    public ArticleDTO(String title, String link, String description, String content, Date datePublished, Collection<CategoryDTO> categoryCollection) {
         this.title = title;
         this.link = link;
         this.description = description;
         this.content = content;
+        this.datePublished = datePublished;
         this.categoryCollection = categoryCollection;
-        this.idJournalist = idJournalist;
     }
 
     public Collection<CategoryDTO> getCategoryCollection() {

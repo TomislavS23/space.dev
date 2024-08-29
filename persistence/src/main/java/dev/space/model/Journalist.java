@@ -26,7 +26,7 @@ import java.util.Objects;
 @Table(name = "journalist")
 @NamedQueries({
     @NamedQuery(name = "Journalist.findAll", query = "SELECT j FROM Journalist j")})
-public class Journalist implements Serializable {
+public class Journalist implements Serializable, Comparable<Journalist> {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -109,6 +109,11 @@ public class Journalist implements Serializable {
     @Override
     public String toString() {
         return firstName + " " + lastName;
+    }
+
+    @Override
+    public int compareTo(Journalist o) {
+        return firstName.compareTo(o.firstName);
     }
 
 }
