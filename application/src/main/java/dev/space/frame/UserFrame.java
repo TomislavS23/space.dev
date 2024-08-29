@@ -1,5 +1,10 @@
 package dev.space.frame;
 
+import dev.space.view.EditArticlePanel;
+import dev.space.view.ViewArticlePanel;
+import java.awt.CardLayout;
+import java.awt.LayoutManager;
+
 /**
  *
  * @author tomislav
@@ -11,6 +16,7 @@ public class UserFrame extends javax.swing.JFrame {
      */
     public UserFrame() {
         initComponents();
+        initialize();
     }
 
     /**
@@ -22,24 +28,111 @@ public class UserFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        pnlMain = new javax.swing.JPanel();
+        mbMain = new javax.swing.JMenuBar();
+        mNavigate = new javax.swing.JMenu();
+        miView = new javax.swing.JMenuItem();
+        miEdit = new javax.swing.JMenuItem();
+        mExit = new javax.swing.JMenu();
+        miExit = new javax.swing.JMenuItem();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Space.dev");
+        setMaximumSize(new java.awt.Dimension(1280, 720));
+        setMinimumSize(new java.awt.Dimension(1280, 720));
+        setPreferredSize(new java.awt.Dimension(1280, 720));
+
+        pnlMain.setLayout(new java.awt.CardLayout());
+
+        mNavigate.setMnemonic('N');
+        mNavigate.setText("Navigate");
+
+        miView.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.ALT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        miView.setText("View Articles");
+        miView.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miViewActionPerformed(evt);
+            }
+        });
+        mNavigate.add(miView);
+
+        miEdit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.ALT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        miEdit.setText("Edit Articles");
+        miEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miEditActionPerformed(evt);
+            }
+        });
+        mNavigate.add(miEdit);
+
+        mbMain.add(mNavigate);
+
+        mExit.setMnemonic('E');
+        mExit.setText("Exit");
+
+        miExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        miExit.setText("Exit");
+        miExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miExitActionPerformed(evt);
+            }
+        });
+        mExit.add(miExit);
+
+        mbMain.add(mExit);
+
+        setJMenuBar(mbMain);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1280, Short.MAX_VALUE)
+            .addComponent(pnlMain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 720, Short.MAX_VALUE)
+            .addComponent(pnlMain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void miExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miExitActionPerformed
+        dispose();
+    }//GEN-LAST:event_miExitActionPerformed
+
+    private void miViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miViewActionPerformed
+        CardLayout layout = (CardLayout) pnlMain.getLayout();
+        layout.show(pnlMain, "ViewArticle");
+    }//GEN-LAST:event_miViewActionPerformed
+
+    private void miEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miEditActionPerformed
+        CardLayout layout = (CardLayout) pnlMain.getLayout();
+        layout.show(pnlMain, "EditArticle");
+    }//GEN-LAST:event_miEditActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu mExit;
+    private javax.swing.JMenu mNavigate;
+    private javax.swing.JMenuBar mbMain;
+    private javax.swing.JMenuItem miEdit;
+    private javax.swing.JMenuItem miExit;
+    private javax.swing.JMenuItem miView;
+    private javax.swing.JPanel pnlMain;
     // End of variables declaration//GEN-END:variables
+
+    private void initialize() {
+        initPanels();
+    }
+
+    private void initPanels() {
+        pnlMain.add(new EditArticlePanel(), "EditArticle");
+        pnlMain.add(new ViewArticlePanel(), "ViewArticle");
+        
+        // display primary panel
+        CardLayout layout = (CardLayout) pnlMain.getLayout();
+        layout.show(pnlMain, "ViewArticle");
+    }
 }

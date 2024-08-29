@@ -6,13 +6,13 @@ import java.util.List;
  *
  * @author Tomislav
  */
-public class ArticleTableModel1 extends javax.swing.table.AbstractTableModel{
+public class ArticleTableModel extends javax.swing.table.AbstractTableModel{
     
-    private static final String[] COLUMN_NAMES = {"Id", "Title", "Link", "Published date", "Picture Path"};
+    private static final String[] COLUMN_NAMES = {"Id", "Title", "Description", "Published date"};
     
     private List<Article> articles;
 
-    public ArticleTableModel1(List<Article> articles) {
+    public ArticleTableModel(List<Article> articles) {
         this.articles = articles;
     }
 
@@ -40,11 +40,9 @@ public class ArticleTableModel1 extends javax.swing.table.AbstractTableModel{
             case 1:
                 return articles.get(rowIndex).getTitle();
             case 2:
-                return articles.get(rowIndex).getLink();
+                return articles.get(rowIndex).getDescription();
             case 3:
                 return articles.get(rowIndex).getDatePublished();
-            case 4:
-                return articles.get(rowIndex).getPicturePath();
             default:
                 throw new RuntimeException("No such column");
         }
