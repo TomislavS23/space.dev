@@ -1,6 +1,5 @@
 package dev.space.query.operation;
 
-import dev.space.dto.RoleDTO;
 import dev.space.model.Role;
 import java.util.List;
 import org.hibernate.HibernateException;

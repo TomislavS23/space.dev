@@ -1,8 +1,35 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package dev.space.frame;
+
+import com.apptasticsoftware.rssreader.Item;
+import dev.space.dto.ArticleDTO;
+import dev.space.dto.CategoryDTO;
+import dev.space.dto.JournalistDTO;
+import dev.space.factory.MapperFactory;
+import dev.space.model.Article;
+import dev.space.model.BasicArticleTableModel;
+import dev.space.model.Category;
+import dev.space.model.Journalist;
+import dev.space.model.Role;
+import dev.space.query.operation.ArticleOperations;
+import dev.space.query.operation.CategoryOperations;
+import dev.space.query.operation.JournalistOperations;
+import dev.space.query.operation.RoleOperations;
+import dev.space.rss.RSSReader;
+import dev.space.session.HibernateSessionFactory;
+import dev.space.session.Operations;
+import dev.space.utilities.MessageUtils;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.TimeZone;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
+import javax.swing.ListSelectionModel;
+import org.modelmapper.ModelMapper;
 
 /**
  *
@@ -15,6 +42,7 @@ public class AdminFrame extends javax.swing.JFrame {
      */
     public AdminFrame() {
         initComponents();
+        initialize();
     }
 
     /**
@@ -26,58 +54,376 @@ public class AdminFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        lsJournalists = new javax.swing.JList<>();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        lsRoles = new javax.swing.JList<>();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        lsCategories = new javax.swing.JList<>();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tbArticles = new javax.swing.JTable();
+        mbMain = new javax.swing.JMenuBar();
+        mDatabase = new javax.swing.JMenu();
+        miInitialize = new javax.swing.JMenuItem();
+        miDelete = new javax.swing.JMenuItem();
+        mExit = new javax.swing.JMenu();
+        miExit = new javax.swing.JMenuItem();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Space.dev - ADMIN");
+        setTitle("Space.dev - Dashboard");
+        setMinimumSize(new java.awt.Dimension(1280, 720));
+
+        jLabel1.setFont(new java.awt.Font("Roboto", 1, 24)); // NOI18N
+        jLabel1.setText("Articles:");
+
+        jLabel2.setFont(new java.awt.Font("Roboto", 1, 24)); // NOI18N
+        jLabel2.setText("Journalists:");
+
+        jScrollPane2.setViewportView(lsJournalists);
+
+        jLabel3.setFont(new java.awt.Font("Roboto", 1, 24)); // NOI18N
+        jLabel3.setText("Categories:");
+
+        jLabel4.setFont(new java.awt.Font("Roboto", 1, 24)); // NOI18N
+        jLabel4.setText("Roles:");
+
+        jScrollPane6.setViewportView(lsRoles);
+
+        jScrollPane7.setViewportView(lsCategories);
+
+        tbArticles.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane3.setViewportView(tbArticles);
+
+        mDatabase.setMnemonic('D');
+        mDatabase.setText("Database");
+
+        miInitialize.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        miInitialize.setText("Initialize");
+        miInitialize.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miInitializeActionPerformed(evt);
+            }
+        });
+        mDatabase.add(miInitialize);
+
+        miDelete.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        miDelete.setText("Drop Data");
+        miDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miDeleteActionPerformed(evt);
+            }
+        });
+        mDatabase.add(miDelete);
+
+        mbMain.add(mDatabase);
+
+        mExit.setMnemonic('E');
+        mExit.setText("Exit");
+
+        miExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        miExit.setText("Exit");
+        miExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miExitActionPerformed(evt);
+            }
+        });
+        mExit.add(miExit);
+
+        mbMain.add(mExit);
+
+        setJMenuBar(mbMain);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1280, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 775, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 26, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jLabel4)
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 720, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(27, 27, 27)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane3))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(29, 29, 29)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(49, Short.MAX_VALUE))
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+    private void miInitializeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miInitializeActionPerformed
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AdminFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AdminFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AdminFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AdminFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+            Optional<List<Item>> source = RSSReader.ReadFromSource();
+            List<Item> items = source.get();
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AdminFrame().setVisible(true);
+            for (Item item : items) {
+                createCategories(item);
+                createJournalist(item);
+                createArticle(item);
+            }
+
+            loadModels();
+            initTable(); // THIS SHOULD NOT BE HERE !!!!!!!!!!!!!!!!!!! TEMPORARY ONLY!!!!!!!!!!!!!!
+        } catch (IOException ex) {
+            MessageUtils.showErrorMessage("Error", ex.getMessage());
+        } catch (Exception ex) {
+            Logger.getLogger(AdminFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_miInitializeActionPerformed
+
+    private void miDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miDeleteActionPerformed
+        try {
+            if (MessageUtils.showConfirmDialog("Critical Operation!", "This operation is irreversible and cannot be undone! Are you sure?")) {
+                session.DeleteAllEntities();
+                journalistSession.DeleteAllEntities();
+                categorySession.DeleteAllEntities();
+                articlesTableModel.setArticles(session.ReadAllEntities());
+            }
+
+            loadModels();
+        } catch (Exception ex) {
+            Logger.getLogger(AdminFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_miDeleteActionPerformed
+
+    private void miExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miExitActionPerformed
+        if (MessageUtils.showConfirmDialog("Exit", "Are you sure?")) {
+            dispose();
+        }
+    }//GEN-LAST:event_miExitActionPerformed
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JList<Category> lsCategories;
+    private javax.swing.JList<Journalist> lsJournalists;
+    private javax.swing.JList<Role> lsRoles;
+    private javax.swing.JMenu mDatabase;
+    private javax.swing.JMenu mExit;
+    private javax.swing.JMenuBar mbMain;
+    private javax.swing.JMenuItem miDelete;
+    private javax.swing.JMenuItem miExit;
+    private javax.swing.JMenuItem miInitialize;
+    private javax.swing.JTable tbArticles;
+    // End of variables declaration//GEN-END:variables
+
+    // Global variables
+    private BasicArticleTableModel articlesTableModel;
+    private ArticleOperations session;
+    private RoleOperations roleSession;
+    private JournalistOperations journalistSession;
+    private CategoryOperations categorySession;
+
+    private DefaultListModel<Journalist> journalistModel;
+    private DefaultListModel<Category> categoryModel;
+    private DefaultListModel<Role> roleModel;
+
+    private ModelMapper mapper;
+
+    private void initialize() {
+        try {
+            initSession();
+            initTable();
+            initModels();
+            loadModels();
+            initMapper();
+        } catch (Exception ex) {
+            MessageUtils.showErrorMessage("Unrecoverable error", "Cannot initiate the form");
+            System.exit(1);
+        }
+    }
+
+    private void initSession() {
+        session = HibernateSessionFactory.InitializeSession(Operations.ARTICLE);
+        roleSession = HibernateSessionFactory.InitializeSession(Operations.ROLE);
+        journalistSession = HibernateSessionFactory.InitializeSession(Operations.JOURNALIST);
+        categorySession = HibernateSessionFactory.InitializeSession(Operations.CATEGORY);
+    }
+
+    private void initTable() throws Exception {
+        tbArticles.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tbArticles.setAutoCreateRowSorter(true);
+        tbArticles.setRowHeight(25);
+        articlesTableModel = new BasicArticleTableModel(session.ReadAllEntities());
+        tbArticles.setModel(articlesTableModel);
+    }
+
+    private void initModels() {
+        journalistModel = new DefaultListModel<>();
+        categoryModel = new DefaultListModel<>();
+        roleModel = new DefaultListModel<>();
+    }
+
+    // TODO: works, but needs fixing...
+    private void loadModels() {
+        List<Role> roles = null;
+        List<Journalist> journalists = null;
+        List<Category> categories = null;
+
+        try {
+            roles = roleSession.ReadAllEntities();
+            journalists = journalistSession.ReadAllEntities().get();
+            categories = categorySession.ReadAllEntities().get();
+        } catch (Exception ex) {
+            MessageUtils.showErrorMessage("Error", ex.getMessage());
+        }
+
+        roleModel.clear();
+        journalistModel.clear();
+        categoryModel.clear();
+
+        roles.forEach(roleModel::addElement);
+        journalists.forEach(journalistModel::addElement);
+        categories.forEach(categoryModel::addElement);
+
+        lsRoles.setModel(roleModel);
+        lsJournalists.setModel(journalistModel);
+        lsCategories.setModel(categoryModel);
+    }
+
+    private void createCategories(Item item) {
+        List<String> categories = item.getCategories();
+
+        categories.forEach(c -> {
+            CategoryDTO category = new CategoryDTO(c);
+            try {
+                List<Category> entities = categorySession.ReadAllEntities().get();
+
+                Category entity = mapper.map(category, Category.class);
+
+                if (!entities.contains(entity)) {
+                    categorySession.InsertEntity(entity);
+                }
+
+            } catch (Exception ex) {
+                MessageUtils.showErrorMessage("Error", ex.getMessage());
             }
         });
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    // End of variables declaration//GEN-END:variables
+    private void createJournalist(Item item) {
+        String[] author = item.getAuthor().get().split(" ");
+
+        JournalistDTO journalist = new JournalistDTO(author[0], author[1]);
+        try {
+            List<Journalist> entities = journalistSession.ReadAllEntities().get();
+
+            Journalist entity = mapper.map(journalist, Journalist.class);
+
+            if (!entities.contains(entity)) {
+                journalistSession.InsertEntity(entity);
+            }
+
+        } catch (Exception ex) {
+            MessageUtils.showErrorMessage("Error", ex.getMessage());
+        }
+    }
+
+    private void createArticle(Item item) {
+
+        try {
+            // Journalist for that article
+            String[] author = item.getAuthor().get().split(" ");
+            JournalistDTO journalistDto = new JournalistDTO(author[0], author[1]);
+            Optional<List<Journalist>> journalist = journalistSession
+                    .ReadEntity(mapper.map(journalistDto, Journalist.class));
+            JournalistDTO journalistEntity = mapper.map(journalist.get().get(0), JournalistDTO.class);
+
+            // Categories for that article (or rather IDs)
+            List<String> strings = item.getCategories();
+            List<CategoryDTO> categories = new ArrayList<>();
+
+            for (String string : strings) {
+                CategoryDTO category = new CategoryDTO(string);
+
+                Optional<List<Category>> categoryEntity = categorySession
+                        .ReadEntity(mapper.map(category, Category.class));
+
+                if (!categoryEntity.isEmpty()) {
+                    categories.add(mapper.map(categoryEntity.get().get(0), CategoryDTO.class));
+                }
+            }
+
+            /*
+            String dateString = item.getPubDate().get();
+            SimpleDateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
+            Date date = formatter.parse(dateString);
+             */
+            
+            // Prepare ArticleDTO and add to database
+            ArticleDTO article = new ArticleDTO(
+                    item.getTitle().get(),
+                    item.getLink().get(),
+                    item.getDescription().get(),
+                    item.getDescription().get(),
+                    categories,
+                    journalistEntity
+            );
+
+            session.InsertEntity(mapper.map(article, Article.class));
+
+        } catch (Exception e) {
+            MessageUtils.showErrorMessage("Error", e.getMessage());
+        }
+
+    }
+
+    private void initMapper() {
+        mapper = MapperFactory.InitializeMapper();
+    }
+
 }

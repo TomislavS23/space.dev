@@ -19,6 +19,7 @@ public class ArticleOperationsImpl implements ArticleOperations {
     private static final String SELECT_ARTICLE = "FROM Article WHERE idArticle = :param";
     private static final String SELECT_ARTICLES = "FROM Article";
     private static final String DELETE_ARTICLE = "DELETE Article where idArticle = :param";
+    private static final String DELETE_ALL_ARTICLES = "DELETE Article";
 
     public ArticleOperationsImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
@@ -123,6 +124,14 @@ public class ArticleOperationsImpl implements ArticleOperations {
                     .getSingleResult();
             
             result.getCategoryCollection().addAll(entities);
+        });
+    }
+
+    @Override
+    public void DeleteAllEntities() throws Exception, HibernateException {
+        sessionFactory.inTransaction(session -> {
+            session.createMutationQuery(DELETE_ALL_ARTICLES)
+                    .executeUpdate();
         });
     }
 

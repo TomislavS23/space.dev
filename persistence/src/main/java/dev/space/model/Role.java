@@ -91,7 +91,7 @@ public class Role implements Serializable {
 
     @Override
     public String toString() {
-        return "dev.space.model.Role[ idRole=" + idRole + " ]";
+        return roleType;
     }
     
 }

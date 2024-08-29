@@ -19,6 +19,7 @@ public class RoleOperationsImpl implements RoleOperations {
     private static final String SELECT_ROLES = "FROM Role";
     private static final String INSERT_ROLE = "INSERT Role(roleType) VALUES(:param)";
     private static final String DELETE_ROLE = "DELETE Role where idRole = :param";
+     private static final String DELETE_ALL_ROLES = "DELETE Role";
 
     public RoleOperationsImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
@@ -109,6 +110,14 @@ public class RoleOperationsImpl implements RoleOperations {
         } catch (Exception e) {
             throw e;
         }
+    }
+
+    @Override
+    public void DeleteAllEntities() throws Exception, HibernateException {
+        sessionFactory.inTransaction(session -> {
+            session.createMutationQuery(DELETE_ALL_ROLES)
+                    .executeUpdate();
+        });
     }
 
 }

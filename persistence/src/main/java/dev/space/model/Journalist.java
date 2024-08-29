@@ -16,6 +16,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  *
@@ -81,27 +82,33 @@ public class Journalist implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (idJournalist != null ? idJournalist.hashCode() : 0);
+        int hash = 7;
+        hash = 53 * hash + Objects.hashCode(this.firstName);
+        hash = 53 * hash + Objects.hashCode(this.lastName);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Journalist)) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
-        Journalist other = (Journalist) object;
-        if ((this.idJournalist == null && other.idJournalist != null) || (this.idJournalist != null && !this.idJournalist.equals(other.idJournalist))) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
-        return true;
+        final Journalist other = (Journalist) obj;
+        if (!Objects.equals(this.firstName, other.firstName)) {
+            return false;
+        }
+        return Objects.equals(this.lastName, other.lastName);
     }
 
     @Override
     public String toString() {
-        return "dev.space.model.Journalist[ idJournalist=" + idJournalist + " ]";
+        return firstName + " " + lastName;
     }
-    
+
 }

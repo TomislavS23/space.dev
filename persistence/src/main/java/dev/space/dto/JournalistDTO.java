@@ -15,6 +15,11 @@ public class JournalistDTO {
     public JournalistDTO() {
     }
 
+    public JournalistDTO(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public JournalistDTO(Integer idJournalist) {
         this.idJournalist = idJournalist;
     }

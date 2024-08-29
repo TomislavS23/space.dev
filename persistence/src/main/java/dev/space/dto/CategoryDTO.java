@@ -14,6 +14,12 @@ public class CategoryDTO {
     public CategoryDTO() {
     }
 
+    public CategoryDTO(String categoryType) {
+        this.categoryType = categoryType;
+    }
+    
+    
+
     public CategoryDTO(Integer idCategory) {
         this.idCategory = idCategory;
     }

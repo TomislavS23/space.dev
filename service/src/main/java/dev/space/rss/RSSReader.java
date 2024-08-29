@@ -23,7 +23,20 @@ public class RSSReader {
         reader = new RssReader();
     }
 
-    private static Optional<List<Item>> ReadFromSource() throws IOException {
+    /**
+     *
+     * This RSS reader library can't read descriptions from certain URLs if
+     * they have HTML elements inside instead of plain text. Only option is downloading
+     * source code and trying to write new tag. Registering new extension (reader.addItemExtension
+     * ("content:encoded", Item::setDescription)) will break the parser. Upon further investigation
+     * it seems that original creator of this RSS library didn't make separate setter for 
+     * content tags, instead content tag uses same setter as description tag.
+     * 
+     * @return Items
+     * @throws IOException
+     * 
+     */
+    public static Optional<List<Item>> ReadFromSource() throws IOException {
         return Optional.of(reader.read(URL).toList());
     }
 }

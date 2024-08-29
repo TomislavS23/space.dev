@@ -50,6 +50,8 @@ public class Article implements Serializable {
     @Column(name = "date_published")
     @Temporal(TemporalType.DATE)
     private Date datePublished;
+    @Column(name = "picture_path")
+    private String picturePath;
     @JoinTable(name = "article_category", joinColumns = {
         @JoinColumn(name = "id_article", referencedColumnName = "id_article")}, inverseJoinColumns = {
         @JoinColumn(name = "id_category", referencedColumnName = "id_category")})
@@ -112,6 +114,14 @@ public class Article implements Serializable {
 
     public void setDatePublished(Date datePublished) {
         this.datePublished = datePublished;
+    }
+
+    public String getPicturePath() {
+        return picturePath;
+    }
+
+    public void setPicturePath(String picturePath) {
+        this.picturePath = picturePath;
     }
 
     public Collection<Category> getCategoryCollection() {

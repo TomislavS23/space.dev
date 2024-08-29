@@ -20,6 +20,7 @@ public class UserOperationsImpl implements UserOperations {
     private static final String SELECT_USER_BY_VALUES = "FROM Users WHERE username = :param1 AND password = :param2";
     private static final String SELECT_USERS = "FROM Users";
     private static final String DELETE_USER = "DELETE Users where idUser = :param";
+    private static final String DELETE_ALL_USERS = "DELETE Users";
 
     public UserOperationsImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
@@ -127,5 +128,13 @@ public class UserOperationsImpl implements UserOperations {
                     .setParameter("param1", entity.getUsername())
                     .setParameter("param2", entity.getPassword())
                     .getResultList());
+    }
+
+    @Override
+    public void DeleteAllEntities() throws Exception, HibernateException {
+        sessionFactory.inTransaction(session -> {
+            session.createMutationQuery(DELETE_ALL_USERS)
+                    .executeUpdate();
+        });
     }
 }

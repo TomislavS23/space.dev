@@ -16,6 +16,7 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  *
@@ -71,27 +72,29 @@ public class Category implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (idCategory != null ? idCategory.hashCode() : 0);
+        int hash = 3;
+        hash = 17 * hash + Objects.hashCode(this.categoryType);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Category)) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
-        Category other = (Category) object;
-        if ((this.idCategory == null && other.idCategory != null) || (this.idCategory != null && !this.idCategory.equals(other.idCategory))) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
-        return true;
+        final Category other = (Category) obj;
+        return Objects.equals(this.categoryType, other.categoryType);
     }
 
     @Override
     public String toString() {
-        return "dev.space.model.Category[ idCategory=" + idCategory + " ]";
+        return categoryType;
     }
-    
+
 }

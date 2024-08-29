@@ -17,7 +17,7 @@ CREATE TABLE users
 CREATE TABLE category
 (
     id_category SERIAL PRIMARY KEY,
-    category_type VARCHAR(255)
+    category_type VARCHAR(255) UNIQUE
 );
 
 CREATE TABLE journalist
@@ -30,11 +30,12 @@ CREATE TABLE journalist
 CREATE TABLE article
 (
     id_article SERIAL PRIMARY KEY,
-    title VARCHAR(255),
-    link VARCHAR(2048),
-    description VARCHAR(255),
+    title VARCHAR,
+    link VARCHAR,
+    description VARCHAR,
     content VARCHAR,
     date_published DATE,
+    picture_path VARCHAR(256),
     id_journalist INT REFERENCES journalist(id_journalist)
 );
 
