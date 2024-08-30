@@ -6,8 +6,8 @@ package dev.space.frame;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatLightLaf;
-import dev.space.view.LoginFormPanel;
-import dev.space.view.RegisterFormPanel;
+import dev.space.view.panel.LoginFormPanel;
+import dev.space.view.panel.RegisterFormPanel;
 import javax.swing.UIManager;
 
 /**

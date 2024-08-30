@@ -319,6 +319,8 @@ public class AdminFrame extends javax.swing.JFrame {
 
     // TODO: works, but needs fixing...
     private void loadModels() {
+        clearModels();
+        
         Set<Role> roles = new TreeSet<>();
         Set<Journalist> journalists = new TreeSet<>();
         Set<Category> categories = new TreeSet<>();
@@ -330,8 +332,6 @@ public class AdminFrame extends javax.swing.JFrame {
         } catch (Exception ex) {
             MessageUtils.showErrorMessage("Error", ex.getMessage());
         }
-
-        clearModels();
 
         roles.forEach(roleModel::addElement);
         journalists.forEach(journalistModel::addElement);

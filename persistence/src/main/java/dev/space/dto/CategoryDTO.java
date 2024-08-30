@@ -1,12 +1,16 @@
 package dev.space.dto;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.util.Objects;
 
 /**
  *
  * @author tomislav
  */
-public class CategoryDTO implements Comparable<CategoryDTO>{
+@XmlAccessorType(XmlAccessType.FIELD)
+
+public class CategoryDTO implements Comparable<CategoryDTO> {
 
     private Integer idCategory;
     private String categoryType;
@@ -17,8 +21,6 @@ public class CategoryDTO implements Comparable<CategoryDTO>{
     public CategoryDTO(String categoryType) {
         this.categoryType = categoryType;
     }
-    
-    
 
     public CategoryDTO(Integer idCategory) {
         this.idCategory = idCategory;

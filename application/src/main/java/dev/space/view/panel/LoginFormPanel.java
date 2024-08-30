@@ -1,4 +1,4 @@
-package dev.space.view;
+package dev.space.view.panel;
 
 import dev.space.dto.UserDTO;
 import dev.space.factory.MapperFactory;

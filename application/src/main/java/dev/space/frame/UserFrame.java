@@ -1,9 +1,9 @@
 package dev.space.frame;
 
-import dev.space.view.EditArticlePanel;
-import dev.space.view.ViewArticlePanel;
+import dev.space.view.dialog.PrintArticleDialog;
+import dev.space.view.panel.EditArticlePanel;
+import dev.space.view.panel.ViewArticlePanel;
 import java.awt.CardLayout;
-import java.awt.LayoutManager;
 
 /**
  *
@@ -33,6 +33,8 @@ public class UserFrame extends javax.swing.JFrame {
         mNavigate = new javax.swing.JMenu();
         miView = new javax.swing.JMenuItem();
         miEdit = new javax.swing.JMenuItem();
+        mTools = new javax.swing.JMenu();
+        miPrint = new javax.swing.JMenuItem();
         mExit = new javax.swing.JMenu();
         miExit = new javax.swing.JMenuItem();
 
@@ -66,6 +68,20 @@ public class UserFrame extends javax.swing.JFrame {
         mNavigate.add(miEdit);
 
         mbMain.add(mNavigate);
+
+        mTools.setMnemonic('T');
+        mTools.setText("Tools");
+
+        miPrint.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        miPrint.setText("Print");
+        miPrint.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miPrintActionPerformed(evt);
+            }
+        });
+        mTools.add(miPrint);
+
+        mbMain.add(mTools);
 
         mExit.setMnemonic('E');
         mExit.setText("Exit");
@@ -116,13 +132,19 @@ public class UserFrame extends javax.swing.JFrame {
         layout.show(pnlMain, "EditArticle");
     }//GEN-LAST:event_miEditActionPerformed
 
+    private void miPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miPrintActionPerformed
+        new PrintArticleDialog(this, true).setVisible(true);
+    }//GEN-LAST:event_miPrintActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu mExit;
     private javax.swing.JMenu mNavigate;
+    private javax.swing.JMenu mTools;
     private javax.swing.JMenuBar mbMain;
     private javax.swing.JMenuItem miEdit;
     private javax.swing.JMenuItem miExit;
+    private javax.swing.JMenuItem miPrint;
     private javax.swing.JMenuItem miView;
     private javax.swing.JPanel pnlMain;
     // End of variables declaration//GEN-END:variables

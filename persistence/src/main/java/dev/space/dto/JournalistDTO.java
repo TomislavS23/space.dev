@@ -1,12 +1,14 @@
 package dev.space.dto;
 
-import java.util.Collection;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.util.Objects;
 
 /**
  *
  * @author tomislav
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class JournalistDTO {
 
     private Integer idJournalist;
@@ -71,8 +73,6 @@ public class JournalistDTO {
         return Objects.equals(this.idJournalist, other.idJournalist);
     }
 
-    
-    
     @Override
     public String toString() {
         return firstName + " " + lastName;

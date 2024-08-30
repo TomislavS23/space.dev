@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package dev.space.view;
+package dev.space.view.panel;
 
 import dev.space.model.Article;
 import dev.space.model.ArticleTableModel;
@@ -33,7 +33,6 @@ public class ViewArticlePanel extends javax.swing.JPanel {
      */
     public ViewArticlePanel() {
         initComponents();
-        initialize();
     }
 
     /**
@@ -66,6 +65,11 @@ public class ViewArticlePanel extends javax.swing.JPanel {
         lbPicture = new javax.swing.JLabel();
 
         setMaximumSize(new java.awt.Dimension(1280, 689));
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                formComponentShown(evt);
+            }
+        });
 
         tbArticles.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -215,6 +219,10 @@ public class ViewArticlePanel extends javax.swing.JPanel {
             MessageUtils.showErrorMessage("Error", ex.getMessage());
         }
     }//GEN-LAST:event_tbArticlesMouseClicked
+
+    private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
+        initialize();
+    }//GEN-LAST:event_formComponentShown
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

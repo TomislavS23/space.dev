@@ -14,11 +14,6 @@
         <exec.mainClass>dev.space.Service</exec.mainClass>
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-            <version>2.3.4</version>
-        </dependency>
         
         <dependency>
             <groupId>org.modelmapper</groupId>
@@ -31,5 +26,11 @@
             <artifactId>rssreader</artifactId>
             <version>3.8.2</version>
         </dependency>
+        
+        <dependency>
+		<groupId>com.sun.xml.bind</groupId>
+		<artifactId>jaxb-impl</artifactId>
+		<version>2.3.4</version>
+	</dependency>
     </dependencies>
 </project>

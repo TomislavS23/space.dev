@@ -1,4 +1,4 @@
-package dev.space.view;
+package dev.space.view.panel;
 
 import dev.space.dto.RoleDTO;
 import dev.space.dto.UserDTO;

@@ -1,5 +1,12 @@
 package dev.space.dto;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Objects;
@@ -8,18 +15,36 @@ import java.util.Objects;
  *
  * @author tomislav
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder = {"title", "link", "description", "content", "datePublished", "idJournalist", "categoryCollection"})
 public class ArticleDTO {
 
+    @XmlAttribute
     private Integer idArticle;
     private String title;
     private String link;
     private String description;
     private String content;
+    
     private Date datePublished;
+    @XmlElementWrapper
+    @XmlElement(name = "category")
     private Collection<CategoryDTO> categoryCollection;
     private JournalistDTO idJournalist;
 
     public ArticleDTO() {
+    }
+
+    public ArticleDTO(Integer idArticle, String title, String link, String description, String content, Date datePublished, Collection<CategoryDTO> categoryCollection, JournalistDTO idJournalist) {
+        this.idArticle = idArticle;
+        this.title = title;
+        this.link = link;
+        this.description = description;
+        this.content = content;
+        this.datePublished = datePublished;
+        this.categoryCollection = categoryCollection;
+        this.idJournalist = idJournalist;
     }
 
     public ArticleDTO(String title, String link, String description, String content, Date datePublished, Collection<CategoryDTO> categoryCollection, JournalistDTO idJournalist) {

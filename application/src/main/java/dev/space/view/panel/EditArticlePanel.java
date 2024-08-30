@@ -1,8 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
-package dev.space.view;
+package dev.space.view.panel;
 
 import dev.space.dto.ArticleDTO;
 import dev.space.dto.CategoryDTO;
@@ -10,7 +6,6 @@ import dev.space.dto.JournalistDTO;
 import dev.space.factory.MapperFactory;
 import dev.space.model.Article;
 import dev.space.model.ArticleTableModel;
-import dev.space.model.BasicArticleTableModel;
 import dev.space.model.Category;
 import dev.space.model.CategoryTransferable;
 import dev.space.model.Journalist;
@@ -28,7 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -37,8 +31,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.DropMode;
@@ -429,11 +421,56 @@ public class EditArticlePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-        // TODO add your handling code here:
+        if (selectedArticle == null) {
+            MessageUtils.showInformationMessage("Incorrect operations", "You must select article before deleting");
+            return;
+        }
+
+        if (!formValid()) {
+            return;
+        }
+
+        try {
+            ArticleDTO article = new ArticleDTO(
+                    selectedArticle.getIdArticle(),
+                    tfTitle.getText().trim(),
+                    tfLink.getText().trim(),
+                    tfDescription.getText().trim(),
+                    taContent.getText().trim(),
+                    DateParser.ParseDate(tfDatePublished.getText().trim()),
+                    selectedCategories,
+                    (JournalistDTO) cbJournalists.getSelectedItem());
+
+            Article map = mapper.map(article, Article.class);
+
+            articleSession.UpdateEntity(map);
+
+            refreshTable();
+            clearForm();
+        } catch (Exception ex) {
+            MessageUtils.showErrorMessage("Error", ex.getMessage());
+        }
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        // TODO add your handling code here:
+        if (selectedArticle == null) {
+            MessageUtils.showInformationMessage("Incorrect operations", "You must select article before deleting");
+            return;
+        }
+
+        if (MessageUtils.showConfirmDialog(
+                "Delete article",
+                "Do you really want to delete article?")) {
+            try {
+                articleSession.DeleteEntity(selectedArticle.getIdArticle());
+                articlesTableModel.setArticles(articleSession.ReadAllEntities());
+
+                clearForm();
+            } catch (Exception ex) {
+                MessageUtils.showErrorMessage("Error", ex.getMessage());
+            }
+
+        }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
 
@@ -478,6 +515,7 @@ public class EditArticlePanel extends javax.swing.JPanel {
     private ArticleTableModel articlesTableModel;
     private DefaultListModel<CategoryDTO> categoryModel;
     private DefaultListModel<CategoryDTO> selectedCategoryModel;
+    private DefaultComboBoxModel<JournalistDTO> journalistModel;
 
     private Set<CategoryDTO> selectedCategories;
 
@@ -506,6 +544,26 @@ public class EditArticlePanel extends javax.swing.JPanel {
         }
     }
 
+    private void initValidation() {
+        fields.put(tfTitle, lbTitleError);
+        fields.put(tfLink, lbLinkError);
+        fields.put(tfDescription, lbDescriptionError);
+        fields.put(taContent, lbContentError);
+        fields.put(tfDatePublished, lbDateError);
+        fields.put(tfPicturePath, lbPicturePathError);
+    }
+
+    private void hideErrors() {
+        fields.entrySet().forEach(entry -> {
+            entry.getValue().setVisible(false);
+        });
+        lbCategoriesError.setVisible(false);
+    }
+
+    private void initMapper() {
+        mapper = MapperFactory.InitializeMapper();
+    }
+
     private void initSession() {
         articleSession = HibernateSessionFactory.InitializeSession(Operations.ARTICLE);
         journalistSession = HibernateSessionFactory.InitializeSession(Operations.JOURNALIST);
@@ -529,12 +587,9 @@ public class EditArticlePanel extends javax.swing.JPanel {
         initCategories();
     }
 
-    private void initMapper() {
-        mapper = MapperFactory.InitializeMapper();
-    }
-
     private void initJournalists() throws Exception {
-        DefaultComboBoxModel<JournalistDTO> journalistModel = new DefaultComboBoxModel<>();
+        journalistModel = new DefaultComboBoxModel<>();
+
         List<Journalist> journalistEntities = journalistSession.ReadAllEntities().get();
         List<JournalistDTO> journalists = new ArrayList<>();
 
@@ -544,20 +599,15 @@ public class EditArticlePanel extends javax.swing.JPanel {
         cbJournalists.setModel(journalistModel);
     }
 
-    private void initValidation() {
-        fields.put(tfTitle, lbTitleError);
-        fields.put(tfLink, lbLinkError);
-        fields.put(tfDescription, lbDescriptionError);
-        fields.put(taContent, lbContentError);
-        fields.put(tfDatePublished, lbDateError);
-        fields.put(tfPicturePath, lbPicturePathError);
-    }
+    private void initCategories() throws Exception {
+        Collection<Category> categories = categorySession.ReadAllEntities().get();
 
-    private void hideErrors() {
-        fields.entrySet().forEach(entry -> {
-            entry.getValue().setVisible(false);
+        categories.forEach(category -> {
+            CategoryDTO selectedCategory = mapper.map(category, CategoryDTO.class);
+            categoryModel.addElement(selectedCategory);
         });
-        lbCategoriesError.setVisible(false);
+
+        lsCategories.setModel(categoryModel);
     }
 
     private void showArticle() throws Exception {
@@ -617,17 +667,6 @@ public class EditArticlePanel extends javax.swing.JPanel {
         }
     }
 
-    private void initCategories() throws Exception {
-        Collection<Category> categories = categorySession.ReadAllEntities().get();
-
-        categories.forEach(category -> {
-            CategoryDTO selectedCategory = mapper.map(category, CategoryDTO.class);
-            categoryModel.addElement(selectedCategory);
-        });
-
-        lsCategories.setModel(categoryModel);
-    }
-
     private void initDragNDrop() {
         lsCategories.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         lsCategories.setDragEnabled(true);
@@ -644,10 +683,12 @@ public class EditArticlePanel extends javax.swing.JPanel {
             ok &= !entry.getKey().getText().trim().isEmpty();
             entry.getValue().setVisible(entry.getKey().getText().trim().isEmpty());
 
-            /* if (lsSelectedCategories.getModel().getSize() == 0) {
+            /*
+            if (lsSelectedCategories.getModel().getSize() == 0) {
             ok = false;
             lbCategoriesError.setVisible(true);
-            }*/
+            }
+             */
             if ("dateField".equals(entry.getKey().getName())) {
                 try {
                     DateParser.ParseDate(entry.getKey().getText().trim());
