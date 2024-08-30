@@ -1,6 +1,7 @@
 package dev.space.dto;
 
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  *
@@ -48,4 +49,32 @@ public class JournalistDTO {
         this.lastName = lastName;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 89 * hash + Objects.hashCode(this.idJournalist);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final JournalistDTO other = (JournalistDTO) obj;
+        return Objects.equals(this.idJournalist, other.idJournalist);
+    }
+
+    
+    
+    @Override
+    public String toString() {
+        return firstName + " " + lastName;
+    }
 }

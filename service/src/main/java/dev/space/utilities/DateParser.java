@@ -31,4 +31,11 @@ public class DateParser {
         
         return formatter.format(date);
     }
+    
+    public static Date ParseDate(String dateString) throws ParseException{
+        formatter = new SimpleDateFormat(TARGET_FORMAT);
+        formatter.setTimeZone(TimeZone.getTimeZone("GMT+2"));
+        
+        return formatter.parse(dateString);
+    }
 }

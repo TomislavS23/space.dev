@@ -6,7 +6,6 @@ package dev.space.view;
 
 import dev.space.model.Article;
 import dev.space.model.ArticleTableModel;
-import dev.space.model.BasicArticleTableModel;
 import dev.space.model.Category;
 import dev.space.query.operation.ArticleOperations;
 import dev.space.session.HibernateSessionFactory;
@@ -18,13 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.ListSelectionModel;
@@ -297,9 +290,11 @@ public class ViewArticlePanel extends javax.swing.JPanel {
 
         tfTitle.setText(selectedArticle.getTitle());
         tfLink.setText(selectedArticle.getLink());
+        
         if (selectedArticle.getIdJournalist() != null) {
             tfJournalist.setText(selectedArticle.getIdJournalist().getFirstName() + " " + selectedArticle.getIdJournalist().getLastName());
         }
+        
         tfDatePublished.setText(DateParser.FormatToString(selectedArticle.getDatePublished()));
         taContent.setText(selectedArticle.getContent());
         

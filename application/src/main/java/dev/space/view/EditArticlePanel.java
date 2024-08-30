@@ -4,6 +4,51 @@
  */
 package dev.space.view;
 
+import dev.space.dto.ArticleDTO;
+import dev.space.dto.CategoryDTO;
+import dev.space.dto.JournalistDTO;
+import dev.space.factory.MapperFactory;
+import dev.space.model.Article;
+import dev.space.model.ArticleTableModel;
+import dev.space.model.BasicArticleTableModel;
+import dev.space.model.Category;
+import dev.space.model.CategoryTransferable;
+import dev.space.model.Journalist;
+import dev.space.query.operation.ArticleOperations;
+import dev.space.query.operation.CategoryOperations;
+import dev.space.query.operation.JournalistOperations;
+import dev.space.session.HibernateSessionFactory;
+import dev.space.session.Operations;
+import dev.space.utilities.DateParser;
+import dev.space.utilities.FileUtils;
+import dev.space.utilities.IconUtils;
+import dev.space.utilities.MessageUtils;
+import java.awt.datatransfer.Transferable;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
+import javax.swing.DropMode;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.ListSelectionModel;
+import javax.swing.TransferHandler;
+import javax.swing.text.JTextComponent;
+import org.modelmapper.ModelMapper;
+
 /**
  *
  * @author tomislav
@@ -15,6 +60,7 @@ public class EditArticlePanel extends javax.swing.JPanel {
      */
     public EditArticlePanel() {
         initComponents();
+        initialize();
     }
 
     /**
@@ -26,19 +72,654 @@ public class EditArticlePanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
+        tfTitle = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        tfLink = new javax.swing.JTextField();
+        tfDescription = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        cbJournalists = new javax.swing.JComboBox<>();
+        jLabel6 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tbArticles = new javax.swing.JTable();
+        jLabel5 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        taContent = new javax.swing.JTextArea();
+        lbPicture = new javax.swing.JLabel();
+        tfPicturePath = new javax.swing.JTextField();
+        lbTitleError = new javax.swing.JLabel();
+        lbLinkError = new javax.swing.JLabel();
+        lbDescriptionError = new javax.swing.JLabel();
+        lbContentError = new javax.swing.JLabel();
+        btnAdd = new javax.swing.JButton();
+        btnUpdate = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
+        btnChoose = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        lsCategories = new javax.swing.JList<>();
+        lbDateError = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        lsSelectedCategories = new javax.swing.JList<>();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        tfDatePublished = new javax.swing.JTextField();
+        lbPicturePathError = new javax.swing.JLabel();
+        lbCategoriesError = new javax.swing.JLabel();
+
+        jLabel1.setText("Title:");
+
+        jLabel2.setText("Link:");
+
+        jLabel3.setText("Date:");
+
+        jLabel4.setText("Description:");
+
+        jLabel6.setText("Picture Path:");
+
+        tbArticles.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        tbArticles.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbArticlesMouseClicked(evt);
+            }
+        });
+        tbArticles.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tbArticlesKeyReleased(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tbArticles);
+
+        jLabel5.setText("Content:");
+
+        taContent.setColumns(20);
+        taContent.setLineWrap(true);
+        taContent.setRows(5);
+        jScrollPane2.setViewportView(taContent);
+
+        lbPicture.setIcon(new javax.swing.ImageIcon(getClass().getResource("/no-content.png"))); // NOI18N
+
+        tfPicturePath.setEditable(false);
+
+        lbTitleError.setFont(new java.awt.Font("Cantarell", 1, 18)); // NOI18N
+        lbTitleError.setForeground(new java.awt.Color(255, 0, 0));
+        lbTitleError.setText("X");
+
+        lbLinkError.setFont(new java.awt.Font("Cantarell", 1, 18)); // NOI18N
+        lbLinkError.setForeground(new java.awt.Color(255, 0, 0));
+        lbLinkError.setText("X");
+
+        lbDescriptionError.setFont(new java.awt.Font("Cantarell", 1, 18)); // NOI18N
+        lbDescriptionError.setForeground(new java.awt.Color(255, 0, 0));
+        lbDescriptionError.setText("X");
+
+        lbContentError.setFont(new java.awt.Font("Cantarell", 1, 18)); // NOI18N
+        lbContentError.setForeground(new java.awt.Color(255, 0, 0));
+        lbContentError.setText("X");
+
+        btnAdd.setBackground(new java.awt.Color(0, 153, 51));
+        btnAdd.setForeground(new java.awt.Color(255, 255, 255));
+        btnAdd.setText("Add");
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
+
+        btnUpdate.setBackground(new java.awt.Color(204, 204, 0));
+        btnUpdate.setForeground(new java.awt.Color(0, 0, 0));
+        btnUpdate.setText("Update");
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateActionPerformed(evt);
+            }
+        });
+
+        btnDelete.setBackground(new java.awt.Color(153, 0, 0));
+        btnDelete.setForeground(new java.awt.Color(255, 255, 255));
+        btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
+        btnChoose.setText("Choose");
+        btnChoose.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChooseActionPerformed(evt);
+            }
+        });
+
+        jScrollPane3.setViewportView(lsCategories);
+
+        lbDateError.setFont(new java.awt.Font("Cantarell", 1, 18)); // NOI18N
+        lbDateError.setForeground(new java.awt.Color(255, 0, 0));
+        lbDateError.setText("X");
+
+        jScrollPane4.setViewportView(lsSelectedCategories);
+
+        jLabel7.setText("Categories:");
+
+        jLabel8.setText("Journalist:");
+
+        tfDatePublished.setName("dateField"); // NOI18N
+
+        lbPicturePathError.setFont(new java.awt.Font("Cantarell", 1, 18)); // NOI18N
+        lbPicturePathError.setForeground(new java.awt.Color(255, 0, 0));
+        lbPicturePathError.setText("X");
+
+        lbCategoriesError.setFont(new java.awt.Font("Cantarell", 1, 18)); // NOI18N
+        lbCategoriesError.setForeground(new java.awt.Color(255, 0, 0));
+        lbCategoriesError.setText("X");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1280, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tfLink, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tfDescription, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane2)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tfTitle))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(65, 65, 65)
+                        .addComponent(jScrollPane1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lbTitleError, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbLinkError, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbDescriptionError, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbContentError, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(38, 38, 38)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                    .addGap(0, 0, Short.MAX_VALUE)
+                                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addGap(66, 66, 66))
+                                                .addGroup(layout.createSequentialGroup()
+                                                    .addComponent(cbJournalists, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addGap(18, 18, 18)
+                                                    .addComponent(tfDatePublished, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                    .addComponent(lbDateError, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addGap(0, 0, Short.MAX_VALUE)))
+                                            .addGap(18, 18, 18))
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                    .addComponent(lbPicture, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addGap(62, 62, 62)
+                                            .addComponent(lbPicturePathError, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(tfPicturePath, javax.swing.GroupLayout.PREFERRED_SIZE, 435, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(18, 18, 18)
+                                            .addComponent(btnChoose))
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(18, 18, 18)
+                                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(lbCategoriesError, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGap(0, 0, Short.MAX_VALUE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(36, 36, 36))))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(467, 467, 467)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(697, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 689, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(15, 15, 15)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(tfTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbTitleError, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cbJournalists, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tfDatePublished, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbDateError, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(tfLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(lbLinkError, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(6, 6, 6)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(tfDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(lbDescriptionError, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(41, 41, 41))))
+                            .addComponent(lbCategoriesError, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(41, 41, 41)
+                        .addComponent(lbPicture, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lbContentError, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 282, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(11, 11, 11)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(tfPicturePath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnChoose)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbPicturePathError, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnAdd)
+                            .addComponent(btnUpdate)
+                            .addComponent(btnDelete))
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(40, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(25, 25, 25)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(629, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void tbArticlesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbArticlesKeyReleased
+        try {
+            showArticle();
+        } catch (Exception ex) {
+            MessageUtils.showErrorMessage("Error", ex.getMessage());
+        }
+    }//GEN-LAST:event_tbArticlesKeyReleased
+
+    private void tbArticlesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbArticlesMouseClicked
+        try {
+            showArticle();
+        } catch (Exception ex) {
+            MessageUtils.showErrorMessage("Error", ex.getMessage());
+        }
+    }//GEN-LAST:event_tbArticlesMouseClicked
+
+    private void btnChooseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChooseActionPerformed
+        Optional<File> file = FileUtils.uploadFile("Image", "jpg", "jpeg", "png");
+
+        try {
+            if (file.isPresent()) {
+                tfPicturePath.setText(file.get().getAbsolutePath());
+                lbPicture.setIcon(IconUtils.createIcon(file.get(), lbPicture.getWidth(), lbPicture.getHeight()));
+            }
+        } catch (IOException ex) {
+            MessageUtils.showErrorMessage("Error", ex.getMessage());
+        }
+    }//GEN-LAST:event_btnChooseActionPerformed
+
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        if (!formValid()) {
+            return;
+        }
+
+        try {
+            ArticleDTO article = new ArticleDTO(
+                    tfTitle.getText().trim(),
+                    tfLink.getText().trim(),
+                    tfDescription.getText().trim(),
+                    taContent.getText().trim(),
+                    DateParser.ParseDate(tfDatePublished.getText().trim()),
+                    selectedCategories,
+                    (JournalistDTO) cbJournalists.getSelectedItem());
+
+            articleSession.InsertEntity(mapper.map(article, Article.class));
+
+            refreshTable();
+            clearForm();
+        } catch (Exception ex) {
+            MessageUtils.showErrorMessage("Error", ex.getMessage());
+        }
+    }//GEN-LAST:event_btnAddActionPerformed
+
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnUpdateActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnChoose;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnUpdate;
+    private javax.swing.JComboBox<JournalistDTO> cbJournalists;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JLabel lbCategoriesError;
+    private javax.swing.JLabel lbContentError;
+    private javax.swing.JLabel lbDateError;
+    private javax.swing.JLabel lbDescriptionError;
+    private javax.swing.JLabel lbLinkError;
+    private javax.swing.JLabel lbPicture;
+    private javax.swing.JLabel lbPicturePathError;
+    private javax.swing.JLabel lbTitleError;
+    private javax.swing.JList<CategoryDTO> lsCategories;
+    private javax.swing.JList<CategoryDTO> lsSelectedCategories;
+    private javax.swing.JTextArea taContent;
+    private javax.swing.JTable tbArticles;
+    private javax.swing.JTextField tfDatePublished;
+    private javax.swing.JTextField tfDescription;
+    private javax.swing.JTextField tfLink;
+    private javax.swing.JTextField tfPicturePath;
+    private javax.swing.JTextField tfTitle;
     // End of variables declaration//GEN-END:variables
+
+    // Global variables
+    private ArticleTableModel articlesTableModel;
+    private DefaultListModel<CategoryDTO> categoryModel;
+    private DefaultListModel<CategoryDTO> selectedCategoryModel;
+
+    private Set<CategoryDTO> selectedCategories;
+
+    private ArticleOperations articleSession;
+    private JournalistOperations journalistSession;
+    private CategoryOperations categorySession;
+
+    private Map<JTextComponent, JLabel> fields = new HashMap<>();
+
+    private ModelMapper mapper;
+
+    private Article selectedArticle;
+
+    private void initialize() {
+        try {
+            initValidation();
+            hideErrors();
+            initMapper();
+            initSession();
+            initTable();
+            initModels();
+            initDragNDrop();
+        } catch (Exception ex) {
+            MessageUtils.showErrorMessage("Unrecoverable error", ex.getMessage());
+            System.exit(1);
+        }
+    }
+
+    private void initSession() {
+        articleSession = HibernateSessionFactory.InitializeSession(Operations.ARTICLE);
+        journalistSession = HibernateSessionFactory.InitializeSession(Operations.JOURNALIST);
+        categorySession = HibernateSessionFactory.InitializeSession(Operations.CATEGORY);
+    }
+
+    private void initTable() throws Exception {
+        tbArticles.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tbArticles.setAutoCreateRowSorter(true);
+        tbArticles.setRowHeight(25);
+        articlesTableModel = new ArticleTableModel(articleSession.ReadAllEntities());
+        tbArticles.setModel(articlesTableModel);
+    }
+
+    private void initModels() throws Exception {
+        categoryModel = new DefaultListModel<>();
+        selectedCategoryModel = new DefaultListModel<>();
+        selectedCategories = new TreeSet<>();
+
+        initJournalists();
+        initCategories();
+    }
+
+    private void initMapper() {
+        mapper = MapperFactory.InitializeMapper();
+    }
+
+    private void initJournalists() throws Exception {
+        DefaultComboBoxModel<JournalistDTO> journalistModel = new DefaultComboBoxModel<>();
+        List<Journalist> journalistEntities = journalistSession.ReadAllEntities().get();
+        List<JournalistDTO> journalists = new ArrayList<>();
+
+        journalistEntities.forEach(j -> journalists.add(mapper.map(j, JournalistDTO.class)));
+        journalists.forEach(journalistModel::addElement);
+
+        cbJournalists.setModel(journalistModel);
+    }
+
+    private void initValidation() {
+        fields.put(tfTitle, lbTitleError);
+        fields.put(tfLink, lbLinkError);
+        fields.put(tfDescription, lbDescriptionError);
+        fields.put(taContent, lbContentError);
+        fields.put(tfDatePublished, lbDateError);
+        fields.put(tfPicturePath, lbPicturePathError);
+    }
+
+    private void hideErrors() {
+        fields.entrySet().forEach(entry -> {
+            entry.getValue().setVisible(false);
+        });
+        lbCategoriesError.setVisible(false);
+    }
+
+    private void showArticle() throws Exception {
+        int selectedRow = tbArticles.getSelectedRow();
+        int rowIndex = tbArticles.convertRowIndexToModel(selectedRow);
+
+        int id = (int) articlesTableModel.getValueAt(rowIndex, 0);
+        selectedArticle = articleSession.ReadEntityById(id);
+        fillForm(selectedArticle);
+    }
+
+    private void fillForm(Article selectedArticle) throws Exception {
+        selectedCategoryModel.clear();
+        categoryModel.clear();
+
+        if (selectedArticle.getPicturePath() != null
+                && Files.exists(Paths.get(selectedArticle.getPicturePath()))) {
+            tfPicturePath.setText(selectedArticle.getPicturePath());
+            setIcon(lbPicture, new File(selectedArticle.getPicturePath()));
+        }
+
+        tfTitle.setText(selectedArticle.getTitle());
+        tfLink.setText(selectedArticle.getLink());
+
+        if (selectedArticle.getIdJournalist() != null) {
+            cbJournalists.setSelectedItem(mapper.map(selectedArticle.getIdJournalist(), JournalistDTO.class));
+        }
+
+        tfDescription.setText(selectedArticle.getDescription());
+        tfDatePublished.setText(DateParser.FormatToString(selectedArticle.getDatePublished()));
+        taContent.setText(selectedArticle.getContent());
+
+        Collection<Category> selectedCategories = selectedArticle.getCategoryCollection();
+        Collection<Category> categories = categorySession.ReadAllEntities().get();
+
+        for (Category category : selectedCategories) {
+            CategoryDTO selectedCategory = mapper.map(category, CategoryDTO.class);
+            selectedCategoryModel.addElement(selectedCategory);
+        }
+
+        categories.forEach(category -> {
+            CategoryDTO selectedCategory = mapper.map(category, CategoryDTO.class);
+            if (!selectedCategories.contains(category)) {
+                categoryModel.addElement(selectedCategory);
+            }
+        });
+
+        lsSelectedCategories.setModel(selectedCategoryModel);
+        lsCategories.setModel(categoryModel);
+    }
+
+    private void setIcon(JLabel label, File file) {
+        try {
+            label.setIcon(IconUtils.createIcon(file, label.getWidth(), label.getHeight()));
+        } catch (IOException ex) {
+            MessageUtils.showErrorMessage("Error", ex.getMessage());
+        }
+    }
+
+    private void initCategories() throws Exception {
+        Collection<Category> categories = categorySession.ReadAllEntities().get();
+
+        categories.forEach(category -> {
+            CategoryDTO selectedCategory = mapper.map(category, CategoryDTO.class);
+            categoryModel.addElement(selectedCategory);
+        });
+
+        lsCategories.setModel(categoryModel);
+    }
+
+    private void initDragNDrop() {
+        lsCategories.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        lsCategories.setDragEnabled(true);
+        lsCategories.setTransferHandler(new ExportTransferHandler());
+
+        lsSelectedCategories.setDropMode(DropMode.ON);
+        lsSelectedCategories.setTransferHandler(new ImportTransferHandler());
+    }
+
+    private boolean formValid() {
+        boolean ok = true;
+
+        for (Map.Entry<JTextComponent, JLabel> entry : fields.entrySet()) {
+            ok &= !entry.getKey().getText().trim().isEmpty();
+            entry.getValue().setVisible(entry.getKey().getText().trim().isEmpty());
+
+            /* if (lsSelectedCategories.getModel().getSize() == 0) {
+            ok = false;
+            lbCategoriesError.setVisible(true);
+            }*/
+            if ("dateField".equals(entry.getKey().getName())) {
+                try {
+                    DateParser.ParseDate(entry.getKey().getText().trim());
+                } catch (Exception e) {
+                    ok = false;
+                    entry.getValue().setVisible(true);
+                }
+            }
+        }
+
+        return ok;
+    }
+
+    private void clearForm() {
+        fields.entrySet().forEach(entry -> {
+            entry.getKey().setText("");
+        });
+
+        selectedCategories.clear();
+        lsSelectedCategories.clearSelection();
+        selectedCategoryModel.clear();
+        cbJournalists.setSelectedIndex(0);
+    }
+
+    private class ExportTransferHandler extends TransferHandler {
+
+        @Override
+        public int getSourceActions(JComponent c) {
+            return MOVE;
+        }
+
+        @Override
+        protected Transferable createTransferable(JComponent c) {
+            return new CategoryTransferable(lsCategories.getSelectedValue());
+        }
+
+    }
+
+    private class ImportTransferHandler extends TransferHandler {
+
+        @Override
+        public boolean canImport(TransferSupport support) {
+            return support.isDataFlavorSupported(CategoryTransferable.CATEGORY_FLAVOR);
+        }
+
+        @Override
+        public boolean importData(TransferSupport support) {
+            Transferable transferable = support.getTransferable();
+            try {
+                CategoryDTO category = (CategoryDTO) transferable.getTransferData(CategoryTransferable.CATEGORY_FLAVOR);
+
+                if (selectedCategories.add(category)) {
+                    loadSelectedCategories();
+                    return true;
+                }
+            } catch (Exception ex) {
+                MessageUtils.showErrorMessage("Error", ex.getMessage());
+            }
+
+            return false;
+        }
+
+        private void loadSelectedCategories() {
+            selectedCategoryModel.clear();
+            selectedCategories.forEach(selectedCategoryModel::addElement);
+            lsSelectedCategories.setModel(selectedCategoryModel);
+        }
+    }
+
+    private void refreshTable() throws Exception {
+        articlesTableModel = new ArticleTableModel(articleSession.ReadAllEntities());
+        tbArticles.setModel(articlesTableModel);
+    }
+
 }

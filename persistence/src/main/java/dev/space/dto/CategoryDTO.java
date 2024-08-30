@@ -6,7 +6,7 @@ import java.util.Objects;
  *
  * @author tomislav
  */
-public class CategoryDTO {
+public class CategoryDTO implements Comparable<CategoryDTO>{
 
     private Integer idCategory;
     private String categoryType;
@@ -64,7 +64,12 @@ public class CategoryDTO {
 
     @Override
     public String toString() {
-        return "CategoryDAO{" + "categoryType=" + categoryType + '}';
+        return categoryType;
+    }
+
+    @Override
+    public int compareTo(CategoryDTO o) {
+        return categoryType.compareTo(o.categoryType);
     }
 
 }
