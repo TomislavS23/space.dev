@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
- */
 package dev.space.view.dialog;
 
 import dev.space.dto.ArticleDTO;
@@ -13,8 +9,6 @@ import dev.space.session.HibernateSessionFactory;
 import dev.space.session.Operations;
 import dev.space.utilities.JAXBUtils;
 import dev.space.utilities.MessageUtils;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ListSelectionModel;
 import org.modelmapper.ModelMapper;
 
@@ -122,9 +116,9 @@ public class PrintArticleDialog extends javax.swing.JDialog {
             MessageUtils.showErrorMessage("Error", "You must select article form the table before printing.");
             return;
         }
-        
+
         ArticleDTO article = mapper.map(selectedArticle, ArticleDTO.class);
-        
+
         try {
             JAXBUtils.save(article, FILENAME);
         } catch (Exception e) {
@@ -139,8 +133,8 @@ public class PrintArticleDialog extends javax.swing.JDialog {
     private javax.swing.JTable tbArticles;
     // End of variables declaration//GEN-END:variables
 
-    private static final String FILENAME = "src/main/resources/paperarchive.xml";
-    
+    private static final String FILENAME = "src/main/resources/article.xml";
+
     private ArticleTableModel articlesTableModel;
     private ArticleOperations articleSession;
     private Article selectedArticle;
@@ -152,7 +146,7 @@ public class PrintArticleDialog extends javax.swing.JDialog {
             initMapper();
             initTable();
         } catch (Exception ex) {
-            Logger.getLogger(PrintArticleDialog.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage("Error", ex.getMessage());
         }
     }
 
@@ -164,7 +158,7 @@ public class PrintArticleDialog extends javax.swing.JDialog {
         tbArticles.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tbArticles.setAutoCreateRowSorter(true);
         tbArticles.setRowHeight(25);
-        articlesTableModel = new ArticleTableModel(articleSession.ReadAllEntities());
+        articlesTableModel = new ArticleTableModel(articleSession.ReadAllEntities().get());
         tbArticles.setModel(articlesTableModel);
     }
 
@@ -177,7 +171,7 @@ public class PrintArticleDialog extends javax.swing.JDialog {
         int rowIndex = tbArticles.convertRowIndexToModel(selectedRow);
 
         int id = (int) articlesTableModel.getValueAt(rowIndex, 0);
-        selectedArticle = articleSession.ReadEntityById(id);
+        selectedArticle = articleSession.ReadEntityById(id).get();
     }
 
 }

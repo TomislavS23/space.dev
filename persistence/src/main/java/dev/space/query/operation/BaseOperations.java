@@ -1,5 +1,6 @@
 package dev.space.query.operation;
 
+import java.util.Optional;
 import org.hibernate.HibernateException;
 
 /**
@@ -11,5 +12,5 @@ public interface BaseOperations<T> {
     void UpdateEntity(T entity) throws Exception, HibernateException;
     void DeleteEntity(Integer id) throws Exception, HibernateException;
     void DeleteAllEntities() throws Exception, HibernateException;
-    T ReadEntityById(Integer id) throws Exception, HibernateException;
+    Optional<T> ReadEntityById(Integer id) throws Exception, HibernateException;
 }

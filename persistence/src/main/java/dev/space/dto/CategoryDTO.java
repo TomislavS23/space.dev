@@ -18,6 +18,11 @@ public class CategoryDTO implements Comparable<CategoryDTO> {
     public CategoryDTO() {
     }
 
+    public CategoryDTO(Integer idCategory, String categoryType) {
+        this.idCategory = idCategory;
+        this.categoryType = categoryType;
+    }
+
     public CategoryDTO(String categoryType) {
         this.categoryType = categoryType;
     }

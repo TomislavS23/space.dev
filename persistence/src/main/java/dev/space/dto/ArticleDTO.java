@@ -17,7 +17,7 @@ import java.util.Objects;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = {"title", "link", "description", "content", "datePublished", "idJournalist", "categoryCollection"})
+@XmlType(propOrder = {"title", "link", "description", "content", "datePublished", "picturePath", "idJournalist", "categoryCollection"})
 public class ArticleDTO {
 
     @XmlAttribute
@@ -26,7 +26,8 @@ public class ArticleDTO {
     private String link;
     private String description;
     private String content;
-    
+    private String picturePath;
+
     private Date datePublished;
     @XmlElementWrapper
     @XmlElement(name = "category")
@@ -36,12 +37,24 @@ public class ArticleDTO {
     public ArticleDTO() {
     }
 
-    public ArticleDTO(Integer idArticle, String title, String link, String description, String content, Date datePublished, Collection<CategoryDTO> categoryCollection, JournalistDTO idJournalist) {
+    public ArticleDTO(Integer idArticle, String title, String link, String description, String content, String picturePath, Date datePublished, Collection<CategoryDTO> categoryCollection, JournalistDTO idJournalist) {
         this.idArticle = idArticle;
         this.title = title;
         this.link = link;
         this.description = description;
         this.content = content;
+        this.picturePath = picturePath;
+        this.datePublished = datePublished;
+        this.categoryCollection = categoryCollection;
+        this.idJournalist = idJournalist;
+    }
+
+    public ArticleDTO(String title, String link, String description, String content, String picturePath, Date datePublished, Collection<CategoryDTO> categoryCollection, JournalistDTO idJournalist) {
+        this.title = title;
+        this.link = link;
+        this.description = description;
+        this.content = content;
+        this.picturePath = picturePath;
         this.datePublished = datePublished;
         this.categoryCollection = categoryCollection;
         this.idJournalist = idJournalist;
@@ -63,14 +76,6 @@ public class ArticleDTO {
         this.description = description;
         this.content = content;
         this.datePublished = datePublished;
-        this.categoryCollection = categoryCollection;
-    }
-
-    public Collection<CategoryDTO> getCategoryCollection() {
-        return categoryCollection;
-    }
-
-    public void setCategoryCollection(Collection<CategoryDTO> categoryCollection) {
         this.categoryCollection = categoryCollection;
     }
 
@@ -114,12 +119,28 @@ public class ArticleDTO {
         this.content = content;
     }
 
+    public String getPicturePath() {
+        return picturePath;
+    }
+
+    public void setPicturePath(String picturePath) {
+        this.picturePath = picturePath;
+    }
+
     public Date getDatePublished() {
         return datePublished;
     }
 
     public void setDatePublished(Date datePublished) {
         this.datePublished = datePublished;
+    }
+
+    public Collection<CategoryDTO> getCategoryCollection() {
+        return categoryCollection;
+    }
+
+    public void setCategoryCollection(Collection<CategoryDTO> categoryCollection) {
+        this.categoryCollection = categoryCollection;
     }
 
     public JournalistDTO getIdJournalist() {

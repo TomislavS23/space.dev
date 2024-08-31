@@ -33,6 +33,6 @@
     <properties>
         <maven.compiler.source>22</maven.compiler.source>
         <maven.compiler.target>22</maven.compiler.target>
-        <exec.mainClass>dev.space.frame.AuthFrame</exec.mainClass>
+        <exec.mainClass>dev.space.view.frame.AuthFrame</exec.mainClass>
     </properties>
 </project>

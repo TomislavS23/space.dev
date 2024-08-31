@@ -4,6 +4,7 @@ import dev.space.model.Article;
 import dev.space.model.Category;
 import dev.space.query.operation.ArticleOperations;
 import java.util.List;
+import java.util.Optional;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -32,12 +33,12 @@ public class ArticleOperationsImpl implements ArticleOperations {
      * @throws HibernateException
      */
     @Override
-    public List<Article> ReadAllEntities() throws Exception, HibernateException {
+    public Optional<List<Article>> ReadAllEntities() throws Exception, HibernateException {
         try {
             Session session = sessionFactory.openSession();
-            return session
+            return Optional.of(session
                     .createSelectionQuery(SELECT_ARTICLES, Article.class)
-                    .getResultList();
+                    .getResultList());
 
         } catch (Exception e) {
             throw e;
@@ -102,13 +103,13 @@ public class ArticleOperationsImpl implements ArticleOperations {
      * @throws HibernateException
      */
     @Override
-    public Article ReadEntityById(Integer id) throws Exception, HibernateException {
+    public Optional<Article> ReadEntityById(Integer id) throws Exception, HibernateException {
         try {
             Session session = sessionFactory.openSession();
-            return session
+            return Optional.of(session
                     .createSelectionQuery(SELECT_ARTICLE, Article.class)
                     .setParameter("param", id)
-                    .getSingleResult();
+                    .getSingleResult());
 
         } catch (Exception e) {
             throw e;
@@ -122,7 +123,7 @@ public class ArticleOperationsImpl implements ArticleOperations {
                     .createSelectionQuery(SELECT_ARTICLE, Article.class)
                     .setParameter("param", id)
                     .getSingleResult();
-            
+
             result.getCategoryCollection().addAll(entities);
         });
     }

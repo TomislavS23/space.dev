@@ -88,4 +88,4 @@ nb-configuration.xml
 ## Miscellaneous
 ##############################
 *.log
-/application/src/main/resources/paperarchive.xml
+/application/src/main/resources/article.xml

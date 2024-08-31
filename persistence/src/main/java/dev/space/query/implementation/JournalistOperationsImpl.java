@@ -14,15 +14,15 @@ import org.hibernate.SessionFactory;
  * @author tomislav
  */
 public class JournalistOperationsImpl implements JournalistOperations {
-
+    
     private final SessionFactory sessionFactory;
-
+    
     private static final String SELECT_JOURNALIST = "FROM Journalist WHERE idJournalist = :param";
     private static final String SELECT_JOURNALIST_BY_VALUES = "FROM Journalist WHERE firstName = :param1 AND lastName = :param2";
     private static final String SELECT_JOURNALISTS = "FROM Journalist";
     private static final String DELETE_JOURNALIST = "DELETE Journalist where idJournalist = :param";
     private static final String DELETE_ALL_JOURNALISTS = "DELETE Journalist";
-
+    
     public JournalistOperationsImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
@@ -40,7 +40,7 @@ public class JournalistOperationsImpl implements JournalistOperations {
             return Optional.of(session
                     .createSelectionQuery(SELECT_JOURNALISTS, Journalist.class)
                     .getResultList());
-
+            
         } catch (Exception e) {
             throw e;
         }
@@ -71,7 +71,7 @@ public class JournalistOperationsImpl implements JournalistOperations {
             Journalist result = session.createSelectionQuery(SELECT_JOURNALIST, Journalist.class)
                     .setParameter("param", entity.getIdJournalist())
                     .getSingleResult();
-
+            
             result.setFirstName(entity.getFirstName());
             result.setLastName(entity.getLastName());
         });
@@ -100,19 +100,19 @@ public class JournalistOperationsImpl implements JournalistOperations {
      * @throws HibernateException
      */
     @Override
-    public Journalist ReadEntityById(Integer id) throws Exception, HibernateException {
+    public Optional<Journalist> ReadEntityById(Integer id) throws Exception, HibernateException {
         try {
             Session session = sessionFactory.openSession();
-            return session
+            return Optional.of(session
                     .createSelectionQuery(SELECT_JOURNALIST, Journalist.class)
                     .setParameter("param", id)
-                    .getSingleResult();
-
+                    .getSingleResult());
+            
         } catch (Exception e) {
             throw e;
         }
     }
-
+    
     @Override
     public void DeleteAllEntities() throws Exception, HibernateException {
         sessionFactory.inTransaction(session -> {
@@ -120,15 +120,15 @@ public class JournalistOperationsImpl implements JournalistOperations {
                     .executeUpdate();
         });
     }
-
+    
     @Override
     public Optional<List<Journalist>> ReadEntity(Journalist entity) throws Exception, HibernateException {
         Session session = sessionFactory.openSession();
-            return Optional.of(session
-                    .createSelectionQuery(SELECT_JOURNALIST_BY_VALUES, Journalist.class)
-                    .setParameter("param1", entity.getFirstName())
-                    .setParameter("param2", entity.getLastName())
-                    .getResultList());
+        return Optional.of(session
+                .createSelectionQuery(SELECT_JOURNALIST_BY_VALUES, Journalist.class)
+                .setParameter("param1", entity.getFirstName())
+                .setParameter("param2", entity.getLastName())
+                .getResultList());
     }
-
+    
 }

@@ -1,4 +1,4 @@
-package dev.space.frame;
+package dev.space.view.frame;
 
 import com.apptasticsoftware.rssreader.Item;
 import dev.space.dto.ArticleDTO;
@@ -228,7 +228,7 @@ public class AdminFrame extends javax.swing.JFrame {
                 articleSession.DeleteAllEntities();
                 journalistSession.DeleteAllEntities();
                 categorySession.DeleteAllEntities();
-                articlesTableModel.setArticles(articleSession.ReadAllEntities());
+                articlesTableModel.setArticles(articleSession.ReadAllEntities().get());
             }
 
             loadModels();
@@ -302,12 +302,12 @@ public class AdminFrame extends javax.swing.JFrame {
         tbArticles.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tbArticles.setAutoCreateRowSorter(true);
         tbArticles.setRowHeight(25);
-        articlesTableModel = new BasicArticleTableModel(articleSession.ReadAllEntities());
+        articlesTableModel = new BasicArticleTableModel(articleSession.ReadAllEntities().get());
         tbArticles.setModel(articlesTableModel);
     }
 
     private void refreshTable() throws Exception {
-        articlesTableModel = new BasicArticleTableModel(articleSession.ReadAllEntities());
+        articlesTableModel = new BasicArticleTableModel(articleSession.ReadAllEntities().get());
         tbArticles.setModel(articlesTableModel);
     }
 
@@ -326,7 +326,7 @@ public class AdminFrame extends javax.swing.JFrame {
         Set<Category> categories = new TreeSet<>();
 
         try {
-            roleSession.ReadAllEntities().forEach(e -> roles.add(e));
+            roleSession.ReadAllEntities().get().forEach(e -> roles.add(e));
             journalistSession.ReadAllEntities().get().forEach(e -> journalists.add(e));
             categorySession.ReadAllEntities().get().forEach(e -> categories.add(e));
         } catch (Exception ex) {

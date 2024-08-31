@@ -273,7 +273,7 @@ public class ViewArticlePanel extends javax.swing.JPanel {
         tbArticles.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tbArticles.setAutoCreateRowSorter(true);
         tbArticles.setRowHeight(25);
-        articlesTableModel = new ArticleTableModel(articleSession.ReadAllEntities());
+        articlesTableModel = new ArticleTableModel(articleSession.ReadAllEntities().get());
         tbArticles.setModel(articlesTableModel);
     }
 
@@ -282,7 +282,7 @@ public class ViewArticlePanel extends javax.swing.JPanel {
         int rowIndex = tbArticles.convertRowIndexToModel(selectedRow);
 
         int id = (int) articlesTableModel.getValueAt(rowIndex, 0);
-        selectedArticle = articleSession.ReadEntityById(id);
+        selectedArticle = articleSession.ReadEntityById(id).get();
         fillForm(selectedArticle);
     }
 

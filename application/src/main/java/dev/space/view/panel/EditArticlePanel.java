@@ -52,7 +52,6 @@ public class EditArticlePanel extends javax.swing.JPanel {
      */
     public EditArticlePanel() {
         initComponents();
-        initialize();
     }
 
     /**
@@ -98,6 +97,12 @@ public class EditArticlePanel extends javax.swing.JPanel {
         tfDatePublished = new javax.swing.JTextField();
         lbPicturePathError = new javax.swing.JLabel();
         lbCategoriesError = new javax.swing.JLabel();
+
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                formComponentShown(evt);
+            }
+        });
 
         jLabel1.setText("Title:");
 
@@ -407,6 +412,7 @@ public class EditArticlePanel extends javax.swing.JPanel {
                     tfLink.getText().trim(),
                     tfDescription.getText().trim(),
                     taContent.getText().trim(),
+                    tfPicturePath.getText().trim(),
                     DateParser.ParseDate(tfDatePublished.getText().trim()),
                     selectedCategories,
                     (JournalistDTO) cbJournalists.getSelectedItem());
@@ -437,6 +443,7 @@ public class EditArticlePanel extends javax.swing.JPanel {
                     tfLink.getText().trim(),
                     tfDescription.getText().trim(),
                     taContent.getText().trim(),
+                    tfPicturePath.getText().trim(),
                     DateParser.ParseDate(tfDatePublished.getText().trim()),
                     selectedCategories,
                     (JournalistDTO) cbJournalists.getSelectedItem());
@@ -463,7 +470,7 @@ public class EditArticlePanel extends javax.swing.JPanel {
                 "Do you really want to delete article?")) {
             try {
                 articleSession.DeleteEntity(selectedArticle.getIdArticle());
-                articlesTableModel.setArticles(articleSession.ReadAllEntities());
+                articlesTableModel.setArticles(articleSession.ReadAllEntities().get());
 
                 clearForm();
             } catch (Exception ex) {
@@ -472,6 +479,10 @@ public class EditArticlePanel extends javax.swing.JPanel {
 
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
+        initialize();
+    }//GEN-LAST:event_formComponentShown
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -512,6 +523,8 @@ public class EditArticlePanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     // Global variables
+    private static final String FILENAME = "src/main/resources/no-content.png";
+
     private ArticleTableModel articlesTableModel;
     private DefaultListModel<CategoryDTO> categoryModel;
     private DefaultListModel<CategoryDTO> selectedCategoryModel;
@@ -538,6 +551,7 @@ public class EditArticlePanel extends javax.swing.JPanel {
             initTable();
             initModels();
             initDragNDrop();
+            clearForm();
         } catch (Exception ex) {
             MessageUtils.showErrorMessage("Unrecoverable error", ex.getMessage());
             System.exit(1);
@@ -574,7 +588,7 @@ public class EditArticlePanel extends javax.swing.JPanel {
         tbArticles.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tbArticles.setAutoCreateRowSorter(true);
         tbArticles.setRowHeight(25);
-        articlesTableModel = new ArticleTableModel(articleSession.ReadAllEntities());
+        articlesTableModel = new ArticleTableModel(articleSession.ReadAllEntities().get());
         tbArticles.setModel(articlesTableModel);
     }
 
@@ -615,7 +629,7 @@ public class EditArticlePanel extends javax.swing.JPanel {
         int rowIndex = tbArticles.convertRowIndexToModel(selectedRow);
 
         int id = (int) articlesTableModel.getValueAt(rowIndex, 0);
-        selectedArticle = articleSession.ReadEntityById(id);
+        selectedArticle = articleSession.ReadEntityById(id).get();
         fillForm(selectedArticle);
     }
 
@@ -627,6 +641,9 @@ public class EditArticlePanel extends javax.swing.JPanel {
                 && Files.exists(Paths.get(selectedArticle.getPicturePath()))) {
             tfPicturePath.setText(selectedArticle.getPicturePath());
             setIcon(lbPicture, new File(selectedArticle.getPicturePath()));
+        }
+        else{
+            setIcon(lbPicture, new File(FILENAME));
         }
 
         tfTitle.setText(selectedArticle.getTitle());
@@ -683,12 +700,14 @@ public class EditArticlePanel extends javax.swing.JPanel {
             ok &= !entry.getKey().getText().trim().isEmpty();
             entry.getValue().setVisible(entry.getKey().getText().trim().isEmpty());
 
-            /*
             if (lsSelectedCategories.getModel().getSize() == 0) {
-            ok = false;
-            lbCategoriesError.setVisible(true);
+                ok = false;
+                lbCategoriesError.setVisible(true);
+            } else {
+                ok = true;
+                lbCategoriesError.setVisible(false);
             }
-             */
+
             if ("dateField".equals(entry.getKey().getName())) {
                 try {
                     DateParser.ParseDate(entry.getKey().getText().trim());
@@ -702,7 +721,7 @@ public class EditArticlePanel extends javax.swing.JPanel {
         return ok;
     }
 
-    private void clearForm() {
+    private void clearForm() throws IOException {
         fields.entrySet().forEach(entry -> {
             entry.getKey().setText("");
         });
@@ -711,6 +730,8 @@ public class EditArticlePanel extends javax.swing.JPanel {
         lsSelectedCategories.clearSelection();
         selectedCategoryModel.clear();
         cbJournalists.setSelectedIndex(0);
+
+        setIcon(lbPicture, new File("src/main/resources/no-content.png"));
     }
 
     private class ExportTransferHandler extends TransferHandler {
@@ -759,7 +780,7 @@ public class EditArticlePanel extends javax.swing.JPanel {
     }
 
     private void refreshTable() throws Exception {
-        articlesTableModel = new ArticleTableModel(articleSession.ReadAllEntities());
+        articlesTableModel = new ArticleTableModel(articleSession.ReadAllEntities().get());
         tbArticles.setModel(articlesTableModel);
     }
 

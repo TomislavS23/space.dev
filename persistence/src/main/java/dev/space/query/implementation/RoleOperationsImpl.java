@@ -3,6 +3,7 @@ package dev.space.query.implementation;
 import dev.space.model.Role;
 import dev.space.query.operation.RoleOperations;
 import java.util.List;
+import java.util.Optional;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -12,15 +13,15 @@ import org.hibernate.SessionFactory;
  * @author tomislav
  */
 public class RoleOperationsImpl implements RoleOperations {
-
+    
     private final SessionFactory sessionFactory;
-
+    
     private static final String SELECT_ROLE = "FROM Role WHERE idRole = :param";
     private static final String SELECT_ROLES = "FROM Role";
     private static final String INSERT_ROLE = "INSERT Role(roleType) VALUES(:param)";
     private static final String DELETE_ROLE = "DELETE Role where idRole = :param";
-     private static final String DELETE_ALL_ROLES = "DELETE Role";
-
+    private static final String DELETE_ALL_ROLES = "DELETE Role";
+    
     public RoleOperationsImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
@@ -32,13 +33,13 @@ public class RoleOperationsImpl implements RoleOperations {
      * @throws HibernateException
      */
     @Override
-    public List<Role> ReadAllEntities() throws Exception, HibernateException {
+    public Optional<List<Role>> ReadAllEntities() throws Exception, HibernateException {
         try {
             Session session = sessionFactory.openSession();
-            return session
+            return Optional.of(session
                     .createSelectionQuery(SELECT_ROLES, Role.class)
-                    .getResultList();
-
+                    .getResultList());
+            
         } catch (Exception e) {
             throw e;
         }
@@ -99,19 +100,19 @@ public class RoleOperationsImpl implements RoleOperations {
      * @throws HibernateException
      */
     @Override
-    public Role ReadEntityById(Integer id) throws Exception, HibernateException {
+    public Optional<Role> ReadEntityById(Integer id) throws Exception, HibernateException {
         try {
             Session session = sessionFactory.openSession();
-            return session
+            return Optional.of(session
                     .createSelectionQuery(SELECT_ROLE, Role.class)
                     .setParameter("param", id)
-                    .getSingleResult();
-
+                    .getSingleResult());
+            
         } catch (Exception e) {
             throw e;
         }
     }
-
+    
     @Override
     public void DeleteAllEntities() throws Exception, HibernateException {
         sessionFactory.inTransaction(session -> {
@@ -119,5 +120,5 @@ public class RoleOperationsImpl implements RoleOperations {
                     .executeUpdate();
         });
     }
-
+    
 }

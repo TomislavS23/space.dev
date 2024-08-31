@@ -2,8 +2,8 @@ package dev.space.view.panel;
 
 import dev.space.dto.UserDTO;
 import dev.space.factory.MapperFactory;
-import dev.space.frame.AdminFrame;
-import dev.space.frame.UserFrame;
+import dev.space.view.frame.AdminFrame;
+import dev.space.view.frame.UserFrame;
 import dev.space.model.Users;
 import dev.space.query.operation.UserOperations;
 import dev.space.session.HibernateSessionFactory;

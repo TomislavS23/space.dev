@@ -23,6 +23,12 @@ public class JournalistDTO {
         this.lastName = lastName;
     }
 
+    public JournalistDTO(Integer idJournalist, String firstName, String lastName) {
+        this.idJournalist = idJournalist;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public JournalistDTO(Integer idJournalist) {
         this.idJournalist = idJournalist;
     }

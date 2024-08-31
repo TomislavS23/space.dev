@@ -2,6 +2,7 @@ package dev.space.query.operation;
 
 import dev.space.model.Role;
 import java.util.List;
+import java.util.Optional;
 import org.hibernate.HibernateException;
 
 /**
@@ -10,5 +11,5 @@ import org.hibernate.HibernateException;
  */
 public interface RoleOperations extends BaseOperations<Role> {
 
-    List<Role> ReadAllEntities() throws Exception, HibernateException;
+    Optional<List<Role>> ReadAllEntities() throws Exception, HibernateException;
 }

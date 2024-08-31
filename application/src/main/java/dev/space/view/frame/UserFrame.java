@@ -1,7 +1,9 @@
-package dev.space.frame;
+package dev.space.view.frame;
 
 import dev.space.view.dialog.PrintArticleDialog;
 import dev.space.view.panel.EditArticlePanel;
+import dev.space.view.panel.ManageCategoriesPanel;
+import dev.space.view.panel.ManageJournalistsPanel;
 import dev.space.view.panel.ViewArticlePanel;
 import java.awt.CardLayout;
 
@@ -10,6 +12,8 @@ import java.awt.CardLayout;
  * @author tomislav
  */
 public class UserFrame extends javax.swing.JFrame {
+
+    private CardLayout layout;
 
     /**
      * Creates new form UserFrame
@@ -30,9 +34,12 @@ public class UserFrame extends javax.swing.JFrame {
 
         pnlMain = new javax.swing.JPanel();
         mbMain = new javax.swing.JMenuBar();
-        mNavigate = new javax.swing.JMenu();
+        mArticle = new javax.swing.JMenu();
         miView = new javax.swing.JMenuItem();
         miEdit = new javax.swing.JMenuItem();
+        mManage = new javax.swing.JMenu();
+        miCategories = new javax.swing.JMenuItem();
+        miJournalists = new javax.swing.JMenuItem();
         mTools = new javax.swing.JMenu();
         miPrint = new javax.swing.JMenuItem();
         mExit = new javax.swing.JMenu();
@@ -40,14 +47,12 @@ public class UserFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Space.dev");
-        setMaximumSize(new java.awt.Dimension(1280, 720));
         setMinimumSize(new java.awt.Dimension(1280, 720));
-        setPreferredSize(new java.awt.Dimension(1280, 720));
 
         pnlMain.setLayout(new java.awt.CardLayout());
 
-        mNavigate.setMnemonic('N');
-        mNavigate.setText("Navigate");
+        mArticle.setMnemonic('N');
+        mArticle.setText("Article");
 
         miView.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.ALT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
         miView.setText("View Articles");
@@ -56,7 +61,7 @@ public class UserFrame extends javax.swing.JFrame {
                 miViewActionPerformed(evt);
             }
         });
-        mNavigate.add(miView);
+        mArticle.add(miView);
 
         miEdit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.ALT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
         miEdit.setText("Edit Articles");
@@ -65,9 +70,29 @@ public class UserFrame extends javax.swing.JFrame {
                 miEditActionPerformed(evt);
             }
         });
-        mNavigate.add(miEdit);
+        mArticle.add(miEdit);
 
-        mbMain.add(mNavigate);
+        mbMain.add(mArticle);
+
+        mManage.setText("Manage");
+
+        miCategories.setText("Manage Categories");
+        miCategories.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miCategoriesActionPerformed(evt);
+            }
+        });
+        mManage.add(miCategories);
+
+        miJournalists.setText("Manage Journalists");
+        miJournalists.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miJournalistsActionPerformed(evt);
+            }
+        });
+        mManage.add(miJournalists);
+
+        mbMain.add(mManage);
 
         mTools.setMnemonic('T');
         mTools.setText("Tools");
@@ -123,12 +148,12 @@ public class UserFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_miExitActionPerformed
 
     private void miViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miViewActionPerformed
-        CardLayout layout = (CardLayout) pnlMain.getLayout();
+        layout = (CardLayout) pnlMain.getLayout();
         layout.show(pnlMain, "ViewArticle");
     }//GEN-LAST:event_miViewActionPerformed
 
     private void miEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miEditActionPerformed
-        CardLayout layout = (CardLayout) pnlMain.getLayout();
+        layout = (CardLayout) pnlMain.getLayout();
         layout.show(pnlMain, "EditArticle");
     }//GEN-LAST:event_miEditActionPerformed
 
@@ -136,14 +161,27 @@ public class UserFrame extends javax.swing.JFrame {
         new PrintArticleDialog(this, true).setVisible(true);
     }//GEN-LAST:event_miPrintActionPerformed
 
+    private void miCategoriesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miCategoriesActionPerformed
+        layout = (CardLayout) pnlMain.getLayout();
+        layout.show(pnlMain, "ManageCategories");
+    }//GEN-LAST:event_miCategoriesActionPerformed
+
+    private void miJournalistsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miJournalistsActionPerformed
+        layout = (CardLayout) pnlMain.getLayout();
+        layout.show(pnlMain, "ManageJournalists");
+    }//GEN-LAST:event_miJournalistsActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu mArticle;
     private javax.swing.JMenu mExit;
-    private javax.swing.JMenu mNavigate;
+    private javax.swing.JMenu mManage;
     private javax.swing.JMenu mTools;
     private javax.swing.JMenuBar mbMain;
+    private javax.swing.JMenuItem miCategories;
     private javax.swing.JMenuItem miEdit;
     private javax.swing.JMenuItem miExit;
+    private javax.swing.JMenuItem miJournalists;
     private javax.swing.JMenuItem miPrint;
     private javax.swing.JMenuItem miView;
     private javax.swing.JPanel pnlMain;
@@ -156,7 +194,9 @@ public class UserFrame extends javax.swing.JFrame {
     private void initPanels() {
         pnlMain.add(new EditArticlePanel(), "EditArticle");
         pnlMain.add(new ViewArticlePanel(), "ViewArticle");
-        
+        pnlMain.add(new ManageCategoriesPanel(), "ManageCategories");
+        pnlMain.add(new ManageJournalistsPanel(), "ManageJournalists");
+
         // display primary panel
         CardLayout layout = (CardLayout) pnlMain.getLayout();
         layout.show(pnlMain, "ViewArticle");
