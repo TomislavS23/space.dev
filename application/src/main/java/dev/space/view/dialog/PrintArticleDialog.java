@@ -126,7 +126,7 @@ public class PrintArticleDialog extends javax.swing.JDialog {
         ArticleDTO article = mapper.map(selectedArticle, ArticleDTO.class);
         
         try {
-            // JAXBUtils.save(article, FILENAME);
+            JAXBUtils.save(article, FILENAME);
         } catch (Exception e) {
             MessageUtils.showErrorMessage("Error", e.getMessage());
         }
