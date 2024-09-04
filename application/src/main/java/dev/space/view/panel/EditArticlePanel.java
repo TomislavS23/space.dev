@@ -377,6 +377,7 @@ public class EditArticlePanel extends javax.swing.JPanel {
             showArticle();
         } catch (Exception ex) {
             MessageUtils.showErrorMessage("Error", ex.getMessage());
+            ex.printStackTrace();
         }
     }//GEN-LAST:event_tbArticlesKeyReleased
 
@@ -385,6 +386,7 @@ public class EditArticlePanel extends javax.swing.JPanel {
             showArticle();
         } catch (Exception ex) {
             MessageUtils.showErrorMessage("Error", ex.getMessage());
+            ex.printStackTrace();
         }
     }//GEN-LAST:event_tbArticlesMouseClicked
 
@@ -428,7 +430,7 @@ public class EditArticlePanel extends javax.swing.JPanel {
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         if (selectedArticle == null) {
-            MessageUtils.showInformationMessage("Incorrect operations", "You must select article before deleting");
+            MessageUtils.showInformationMessage("Incorrect operations", "You must select article before updating");
             return;
         }
 
@@ -644,6 +646,7 @@ public class EditArticlePanel extends javax.swing.JPanel {
         }
         else{
             setIcon(lbPicture, new File(FILENAME));
+            tfPicturePath.setText("");
         }
 
         tfTitle.setText(selectedArticle.getTitle());

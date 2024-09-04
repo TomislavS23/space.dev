@@ -77,6 +77,7 @@ public class ArticleOperationsImpl implements ArticleOperations {
             result.setContent(entity.getContent());
             result.setDatePublished(entity.getDatePublished());
             result.setIdJournalist(entity.getIdJournalist());
+            result.setPicturePath(entity.getPicturePath());
         });
     }
 
